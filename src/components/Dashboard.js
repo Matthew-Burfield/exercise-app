@@ -1,4 +1,5 @@
 import React from 'react';
+import NavLink from './NavLink';
 
 const Dashboard = () =>
   <div className="dashboard">
@@ -8,13 +9,13 @@ const Dashboard = () =>
     </div>
     <div className="routine-outer-container">
       <div className="routine-inner-container">
-        <button className="routine">Upper Body</button>
-        <button className="routine">Legs</button>
+        <NavLink className="routine" to="/exercises">Start working out</NavLink>
+        {/* <button className="routine">Legs</button> */}
       </div>
-      <div className="routine-inner-container">
+      {/* <div className="routine-inner-container">
         <button className="routine">Core and back</button>
         <button className="routine">Chest</button>
-      </div>
+      </div> */}
     </div>
   </div>;
 

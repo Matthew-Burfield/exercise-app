@@ -1,24 +1,35 @@
 import React from 'react';
 import NavLink from './NavLink';
 
-const Exercises = ({ children }) =>
+const Exercises = (props, { children }) =>
   <div>
     <ul>
-      <li><NavLink to="/exercises/squat">Squat</NavLink></li>
-      <li><NavLink to="/exercises/Pushup">Pushup</NavLink></li>
-      <li><NavLink to="/exercises/Deadlift">Deadlift</NavLink></li>
-      <li><NavLink to="/exercises/Handstand">Handstand</NavLink></li>
-      <li><NavLink to="/exercises/Dip">Dip</NavLink></li>
+      {props.routines[0].exercises.map((item) => {
+        const path = `/exercises/${item.name}`;
+        return <li key={item.name}><NavLink to={path}>{item.name}</NavLink></li>;
+      })}
     </ul>
     {children}
   </div>;
 
 Exercises.propTypes = {
-  children: React.PropTypes.node,
+  routines: React.PropTypes.arrayOf(React.PropTypes.shape({
+    name: React.PropTypes.string.isRequired,
+    exercises: React.PropTypes.arrayOf(React.PropTypes.shape({
+      name: React.PropTypes.string.isRequired,
+      sets: React.PropTypes.number.isRequired,
+      reps: React.PropTypes.number.isRequired,
+      minInBetweenSets: React.PropTypes.number.isRequired,
+      timeLengthOfExercise: React.PropTypes.number,
+      variations: React.PropTypes.arrayOf(React.PropTypes.string),
+      selectedVariation: React.PropTypes.number,
+    })),
+  })).isRequired,
 };
 
 Exercises.defaultProps = {
   children: [],
+  routines: [],
 };
 
 export default Exercises;
