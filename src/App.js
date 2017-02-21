@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Map } from 'immutable';
 import NavBar from './components/NavBar';
-import './App.css';
+import './App.scss';
 
 class App extends Component {
 

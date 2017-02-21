@@ -5,7 +5,7 @@ import App from './App';
 import Dashboard from './components/Dashboard';
 import Exercises from './components/Exercises';
 import Exercise from './components/Exercise';
-import './index.css';
+import './index.scss';
 
 ReactDOM.render(
   <Router history={browserHistory}>

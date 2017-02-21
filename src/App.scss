@@ -1,11 +1,19 @@
+$font-stack: "Open Sans", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+
 body {
   background-color: #e7edee;
-  font-family: "Open Sans", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
-  color: #444;
+  font-family: $font-stack;
+  color: #000;
 }
 
 .App {
   text-align: center;
+}
+
+@media only screen and (max-device-width: 480px) {
+  .routineHeader {
+    display: none;
+  }
 }
 
 .routine-outer-container {
