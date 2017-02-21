@@ -4,7 +4,7 @@ import NavLink from './NavLink';
 const Exercises = (props) => {
   const data = props.data;
   return (<div>
-    <h2>Current Routine: Full Body Workout</h2>
+    <h2 className="routineTitle">Current Routine: Full Body Workout</h2>
     <div className="exerciseBreadCrumb">
       {data.getIn(['routines', 'fullBodyWorkout', 'exercises']).keySeq().map((name, index) => {
         const path = `/exercises/${name}`;
