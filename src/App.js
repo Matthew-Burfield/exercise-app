@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Map, List } from 'immutable';
-import NavBar from './components/NavBar';
+import { NavBarTop, NavBarBottom } from './components/NavBar';
 import './App.scss';
 
 class App extends Component {
@@ -74,6 +74,8 @@ class App extends Component {
       }),
     };
     this.handleFinishedSetBtnClk = this.handleFinishedSetBtnClk.bind(this);
+    this.nextExercise = this.nextExercise.bind(this);
+    this.previousExercise = this.previousExercise.bind(this);
   }
 
   /**
@@ -88,14 +90,39 @@ class App extends Component {
     }));
   }
 
+  /**
+   * Increase the currentWorkout. This will rerender the screen to the next exercise.
+   * TODO: Prevent the currentWorkout from being larger than the routine length
+   */
+  nextExercise() {
+    this.setState(prevState => ({
+      data: prevState.data.set('currentWorkout', prevState.data.get('currentWorkout') + 1),
+    }));
+  }
+
+  /**
+   * Descrease the currentWorkout. This will rerender the screen to the next exercise.
+   * TODO: Prevent the currentWorkout from going lower than 0
+   */
+  previousExercise() {
+    this.setState(prevState => ({
+      data: prevState.data.set('currentWorkout', prevState.data.get('currentWorkout') - 1),
+    }));
+  }
+
+
   render() {
     return (
       <div className="App">
-        <NavBar />
+        <NavBarTop />
         {this.props.children && React.cloneElement(this.props.children, {
           data: this.state.data,
           handleFinishedSetBtnClk: this.handleFinishedSetBtnClk,
         })}
+        <NavBarBottom
+          handleNextExercise={this.nextExercise}
+          handlePreviousExercise={this.previousExercise}
+        />
       </div>
     );
   }

@@ -2,7 +2,7 @@ import React from 'react';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import NavLink from './NavLink';
 
-const NavBar = () =>
+export const NavBarTop = () =>
   <Navbar collapseOnSelect>
     <Navbar.Header>
       <Navbar.Brand>
@@ -18,4 +18,17 @@ const NavBar = () =>
     </Navbar.Collapse>
   </Navbar>;
 
-export default NavBar;
+export const NavBarBottom = props =>
+  <Navbar fixedBottom>
+    <Nav style={{ float: 'left', margin: 0 }}>
+      <NavItem eventKey={1} onClick={props.handlePreviousExercise}>Prev</NavItem>
+    </Nav>
+    <Nav pullRight style={{ float: 'right', marginRight: -15, margin: 0 }}>
+      <NavItem eventKey={1} onClick={props.handleNextExercise}>Next</NavItem>
+    </Nav>
+  </Navbar>;
+
+NavBarBottom.propTypes = {
+  handleNextExercise: React.PropTypes.func,
+  handlePreviousExercise: React.PropTypes.func,
+};
