@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 import NavBar from './components/NavBar';
 import './App.scss';
 
@@ -13,6 +13,7 @@ class App extends Component {
     super(props);
     this.state = {
       data: Map({
+        currentWorkout: 0,
         default_settings: Map({
           weightUnit: 'kg',
           countdownTimerLength: 10,
@@ -20,17 +21,19 @@ class App extends Component {
         }),
         routines: Map({
           fullBodyWorkout: Map({
-            exercises: Map({
-              Handstand: Map({
+            exercises: List([
+              Map({
+                name: 'Handstand',
                 sets: 5,
                 currSets: 0,
                 reps: 1,
                 timeBetweenSets: 180,
-                timeLengthOfExercise: 0.5,
+                timeLengthOfExercise: 30,
                 variations: ['Against Wall', 'Free Standing'],
                 selectedVariation: 0,
               }),
-              Dip: Map({
+              Map({
+                name: 'Dip',
                 sets: 5,
                 currSets: 0,
                 reps: 5,
@@ -38,7 +41,8 @@ class App extends Component {
                 variations: ['Assisted Ring Dips', 'Ring Dips', 'Weighted Ring Dips'],
                 selectedVariation: 0,
               }),
-              Row: Map({
+              Map({
+                name: 'Row',
                 sets: 5,
                 currSets: 0,
                 reps: 5,
@@ -46,7 +50,8 @@ class App extends Component {
                 variations: ['Normal Row'],
                 selectedVariation: 0,
               }),
-              Pullup: Map({
+              Map({
+                name: 'Pullup',
                 sets: 5,
                 currSets: 0,
                 reps: 5,
@@ -54,7 +59,8 @@ class App extends Component {
                 variations: ['Negative Pullup', 'Assisted Pullup', 'Full Ring Pullup', 'Ring Muscle Up'],
                 selectedVariation: 2,
               }),
-              Pushup: Map({
+              Map({
+                name: 'Pushup',
                 sets: 5,
                 currSets: 0,
                 reps: 5,
@@ -62,7 +68,7 @@ class App extends Component {
                 variations: ['Normal Pushup', 'Ring Pushup', 'Reverse Ring Pushup'],
                 selectedVariation: 2,
               }),
-            }),
+            ]),
           }),
         }),
       }),
@@ -74,10 +80,10 @@ class App extends Component {
    * User has clicked the button to say they have finished their current set.
    * Start the timer loop and increase the number of sets.
    */
-  handleFinishedSetBtnClk(exerciseName) {
+  handleFinishedSetBtnClk(exerciseIndex) {
     this.setState(({ data }) => ({
       data: data.updateIn(
-        ['routines', 'fullBodyWorkout', 'exercises', exerciseName, 'currSets'], val => val + 1,
+        ['routines', 'fullBodyWorkout', 'exercises', exerciseIndex, 'currSets'], val => val + 1,
       ),
     }));
   }

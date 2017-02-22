@@ -1,10 +1,12 @@
 import React from 'react';
+import { Button } from 'react-bootstrap';
 
 class Exercise extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      secondsRemaining: this.props.exercise.get('timeBetweenSets'),
+      timeBetweenSets: this.props.exercise.get('timeBetweenSets'),
+      timeLengthOfExercise: this.props.exercise.get('timeLengthOfExercise'),
       isCountingDown: false,
     };
     this.tick = this.tick.bind(this);
@@ -12,11 +14,11 @@ class Exercise extends React.Component {
     this.resetTimer = this.resetTimer.bind(this);
   }
 
-  tick() {
+  tick(key) {
     this.setState(prevState => ({
-      secondsRemaining: prevState.secondsRemaining - 1,
+      [key]: prevState.timeBetweenSets - 1,
     }));
-    if (this.state.secondsRemaining <= 0) {
+    if (this.state.timeBetweenSets <= 0) {
       clearInterval(this.interval);
       this.resetTimer();
     }
@@ -24,56 +26,87 @@ class Exercise extends React.Component {
 
   resetTimer() {
     this.setState({
-      secondsRemaining: this.props.exercise.get('timeBetweenSets'),
+      timeBetweenSets: this.props.exercise.get('timeBetweenSets'),
+      isCountingDown: false,
     });
   }
 
   handleFinishedSetBtnClk() {
-    this.props.handleFinishedSetBtnClk(this.props.params.name);
+    this.props.handleFinishedSetBtnClk(this.props.currentWorkout);
     this.resetTimer();
+    this.setState({
+      isCountingDown: true,
+    });
     clearInterval(this.interval);
-    this.interval = setInterval(this.tick, 1000);
+    this.interval = setInterval(() => this.tick('timeBetweenSets'), 1000);
   }
 
   render() {
     const ex = this.props.exercise;
+    const bgGreen = '#66BB6A';
+    const bgRed = '#EF5350';
+    // const bgOrange = '#FFA726';
+    const backgroundColor = this.state.isCountingDown ? bgRed : bgGreen;
 
     return (<div>
-      <p><b>Name:</b> {this.props.params.name}</p>
-      <p><b>Sets:</b> {ex.get('currSets')}/{ex.get('sets')}</p>
-      <p><b>Reps:</b> {ex.get('reps')}</p>
-      {/* {ex.selectedVariation !== '' && ex.variations.length > 0 &&
-        <p><b>Current Variation:</b> {ex.variations[ex.selectedVariation]}</p>
-      } */}
-      {ex.get('weight') &&
-        <p><b>weight:</b> {ex.get('weight')}</p>
+      <div className="currentExercise" style={{ backgroundColor }}>
+        <p className="title"><b className="name">Name: </b>{ex.get('name')}</p>
+        <p><b className="sets">Sets:</b> {ex.get('currSets')}/{ex.get('sets')}</p>
+        <p><b className="reps">Reps:</b> {ex.get('reps')}</p>
+        {/* {ex.selectedVariation !== '' && ex.variations.length > 0 &&
+          <p><b>Current Variation:</b> {ex.variations[ex.selectedVariation]}</p>
+        } */}
+        {ex.get('weight') &&
+          <p><b className="weights">weight:</b> {ex.get('weight')}</p>
       }
-      <TimeBetweenSets
-        secondsRemaining={this.state.secondsRemaining}
-      />
-      <button onClick={this.handleFinishedSetBtnClk}>
-        Finished Set
-      </button>
+        {this.state.isCountingDown &&
+          <TimeBetweenSets
+            timeBetweenSets={this.state.timeBetweenSets}
+          />
+        }
+        {!this.state.isCountingDown &&
+          <Button bsSize="large" onClick={this.handleFinishedSetBtnClk}>
+            Finished Set
+          </Button>
+        }
+      </div>
     </div>);
   }
 }
 
+const addLeadingZerosToNumber = (number) => {
+  let returnVal;
+  if (number.toString().length === 1) {
+    returnVal = `0${number}`;
+  } else {
+    returnVal = number;
+  }
+  return returnVal;
+  // return number.toString().length === 1 ? `0${number}` : number;
+};
+
 const TimeBetweenSets = (props) => {
-  const minUntilNextSet = Math.floor((props.secondsRemaining % (60 * 60)) / 60);
-  const secUntilNextSet = Math.floor(props.secondsRemaining % 60);
-  return (<p>
-    <b>Time in between sets:</b> {minUntilNextSet} min {secUntilNextSet} sec
-  </p>);
+  const minUntilNextSet = Math.floor((props.timeBetweenSets % (60 * 60)) / 60);
+  const secUntilNextSet = addLeadingZerosToNumber(Math.floor(props.timeBetweenSets % 60));
+
+  return (
+    <div className="setCountdownTimer">
+      <p className="mobile">
+        {minUntilNextSet} : {secUntilNextSet}
+      </p>
+      <p className="desktop">
+        <b>Time in between sets: </b>{minUntilNextSet} min {secUntilNextSet} sec
+      </p>
+    </div>
+  );
 };
 
 TimeBetweenSets.propTypes = {
-  secondsRemaining: React.PropTypes.number.isRequired,
+  timeBetweenSets: React.PropTypes.number.isRequired,
 };
 
 Exercise.propTypes = {
-  params: React.PropTypes.shape({
-    name: React.PropTypes.string.isRequired,
-  }).isRequired,
+  currentWorkout: React.PropTypes.number,
   exercise: React.PropTypes.shape({
     get: React.PropTypes.func,
     sets: React.PropTypes.number,
@@ -89,11 +122,15 @@ Exercise.propTypes = {
 };
 
 Exercise.defaultProps = {
+  currentWorkout: 0,
   exercise: {
     name: '',
     sets: 0,
     currSets: 0,
     reps: 0,
+    get() {
+      return '';
+    },
   },
   handleFinishedSetBtnClk() {},
 };

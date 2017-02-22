@@ -1,18 +1,58 @@
-$font-stack: "Open Sans", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+$font-stack: "Roboto", "Open Sans", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
 
 body {
-  background-color: #e7edee;
   font-family: $font-stack;
   color: #000;
 }
 
 .App {
   text-align: center;
+
+  height: 100vh;
+}
+
+.navbar {
+  margin-bottom: 0px;
 }
 
 @media only screen and (max-device-width: 480px) {
   .routineHeader {
     display: none;
+  }
+
+  .currentExercise {
+    height: 100vh;
+
+    .title {
+      font-size: 50px;
+    }
+
+    .name {
+      display: none;
+    }
+
+    p {
+      color: white;
+      font-size: 30px;
+
+      b {
+        font-weight: normal;
+      }
+    }
+
+    .setCountdownTimer
+      .desktop {
+        display: none;
+      }
+
+      .mobile {
+        font-size: 200px;
+        letter-spacing: -35px;
+        white-space: nowrap;
+        margin-left: -40px;
+      }
   }
 }
 
