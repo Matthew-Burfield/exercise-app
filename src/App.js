@@ -94,13 +94,13 @@ class App extends Component {
    * Start the timer loop and increase the number of sets.
    */
   handleFinishedSetBtnClk(exerciseIndex) {
-    this.setState(({ data }) => ({
-      data: data.updateIn(
+    this.setState(prevState => ({
+      data: prevState.data.updateIn(
         ['routines', 'fullBodyWorkout', 'exercises', exerciseIndex, 'currSets'], val => val + 1,
       ),
     }));
-    this.resetTimer();
-    this.startCountdown(true);
+    this.resetTimer(exerciseIndex);
+    this.startCountdown(exerciseIndex, true);
     this.createInterval(exerciseIndex, 'timeBetweenSets');
   }
 
@@ -141,14 +141,18 @@ class App extends Component {
     }
     if (isInRecovery && timeBetweenSets < 0) {
       clearInterval(this.interval);
-      this.resetTimer();
+      this.resetTimer(exerciseIndex);
     }
   }
 
   resetTimer(exerciseIndex) {
-    this.setState(({ data }) => ({
-      data: data.setIn(
+    this.setState(prevState => ({
+      data: prevState.data.setIn(
         ['routines', 'fullBodyWorkout', 'exercises', exerciseIndex, 'timeBetweenSets'], 180,
+      ),
+    }));
+    this.setState(prevState => ({
+      data: prevState.data.setIn(
         ['routines', 'fullBodyWorkout', 'exercises', exerciseIndex, 'isCountingDown'], false,
       ),
     }));
@@ -160,9 +164,13 @@ class App extends Component {
   }
 
   startCountdown(exerciseIndex, isInRecovery = false) {
-    this.setState(({ data }) => ({
-      data: data.setIn(
+    this.setState(prevState => ({
+      data: prevState.data.setIn(
         ['routines', 'fullBodyWorkout', 'exercises', exerciseIndex, 'isCountingDown'], true,
+      ),
+    }));
+    this.setState(prevState => ({
+      data: prevState.data.setIn(
         ['routines', 'fullBodyWorkout', 'exercises', exerciseIndex, 'isInRecovery'], isInRecovery,
       ),
     }));
