@@ -29,7 +29,7 @@ class Exercise extends React.Component {
       counterValue = ex.get('timeBetweenSets');
     } else if (ex.get('isCountingDown')) {
       backgroundColor = bgOrange;
-      counterValue = ex.get('timeLengthOfExercise');
+      counterValue = ex.get('timeLengthOfExerciseCounter');
     } else {
       backgroundColor = bgGreen;
       counterValue = '';
@@ -47,9 +47,6 @@ class Exercise extends React.Component {
         {ex.get('weight') &&
           <p><b className="weights">weight:</b> {ex.get('weight')}</p>
         }
-        {ex.get('weight') &&
-          <p><b className="weights">weight:</b> {ex.get('weight')}</p>
-        }
         {ex.get('timeLengthOfExercise') !== undefined &&
           <p>{ex.get('timeLengthOfExercise')} sec hold</p>
         }
@@ -58,7 +55,7 @@ class Exercise extends React.Component {
             remainingTime={counterValue}
           />
         }
-        {!ex.get('isCountingDown') && ex.get('timeLengthOfExercise') === undefined &&
+        {!ex.get('isCountingDown') && ex.get('timeLengthOfExerciseCounter') === undefined &&
           <Button
             bsSize="large"
             onClick={() => this.props.handleFinishedSetBtnClk(this.props.currentWorkout)}
@@ -66,7 +63,7 @@ class Exercise extends React.Component {
             Finished Set
           </Button>
         }
-        {!ex.get('isCountingDown') && ex.get('timeLengthOfExercise') !== undefined &&
+        {!ex.get('isCountingDown') && ex.get('timeLengthOfExerciseCounter') !== undefined &&
           <Button
             bsSize="large"
             onClick={() => this.props.handleStartTimerBtnClk(this.props.currentWorkout)}

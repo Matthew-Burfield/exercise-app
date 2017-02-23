@@ -107,21 +107,30 @@ class App extends Component {
 
   /**
    * Increase the currentWorkout. This will rerender the screen to the next exercise.
-   * TODO: Prevent the currentWorkout from being larger than the routine length
    */
   nextExercise() {
+    const numExercises = this.state.data.getIn(['routines', 'fullBodyWorkout', 'exercises']).size;
+    let currentWorkout = this.state.data.get('currentWorkout');
+
+    currentWorkout += 1;
+    if (currentWorkout > numExercises - 1) {
+      currentWorkout = numExercises - 1;
+    }
+
     this.setState(prevState => ({
-      data: prevState.data.set('currentWorkout', prevState.data.get('currentWorkout') + 1),
+      data: prevState.data.set('currentWorkout', currentWorkout),
     }));
   }
 
   /**
    * Descrease the currentWorkout. This will rerender the screen to the next exercise.
-   * TODO: Prevent the currentWorkout from going lower than 0
    */
   previousExercise() {
+    let currentWorkout = this.state.data.get('currentWorkout') - 1;
+    currentWorkout = currentWorkout < 0 ? 0 : currentWorkout;
+
     this.setState(prevState => ({
-      data: prevState.data.set('currentWorkout', prevState.data.get('currentWorkout') - 1),
+      data: prevState.data.set('currentWorkout', currentWorkout),
     }));
   }
 
