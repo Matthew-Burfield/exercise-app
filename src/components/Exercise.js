@@ -38,17 +38,17 @@ class Exercise extends React.Component {
 
     return (<div>
       <div className="currentExercise" style={{ backgroundColor }}>
-        <p className="title"><b className="name">Name: </b>{ex.get('name')}</p>
-        <p><b className="sets">Sets:</b> {ex.get('currSets')}/{ex.get('sets')}</p>
-        <p><b className="reps">Reps:</b> {ex.get('reps')}</p>
+        <div><p className="title"><b className="name">Name: </b>{ex.get('name')}</p></div>
+        <div><p><b className="sets">Sets:</b> {ex.get('currSets')}/{ex.get('sets')}</p></div>
+        <div><p><b className="reps">Reps:</b> {ex.get('reps')}</p></div>
         {/* {ex.selectedVariation !== '' && ex.variations.length > 0 &&
           <p><b>Current Variation:</b> {ex.variations[ex.selectedVariation]}</p>
         } */}
         {ex.get('weight') &&
-          <p><b className="weights">weight:</b> {ex.get('weight')}</p>
+          <div><p><b className="weights">weight:</b> {ex.get('weight')}</p></div>
         }
         {ex.get('timeLengthOfExercise') !== undefined &&
-          <p>{ex.get('timeLengthOfExercise')} sec hold</p>
+          <div><p>{ex.get('timeLengthOfExercise')} sec hold</p></div>
         }
         {ex.get('isCountingDown') &&
           <CountdownTimer
