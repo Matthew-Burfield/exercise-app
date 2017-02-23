@@ -29,6 +29,7 @@ class App extends Component {
                 reps: 1,
                 timeBetweenSets: 180,
                 timeLengthOfExercise: 30,
+                timeLengthOfExerciseCounter: 30,
                 variations: ['Against Wall', 'Free Standing'],
                 selectedVariation: 0,
                 isCountingDown: false,
@@ -127,7 +128,7 @@ class App extends Component {
 
   tick(exerciseIndex, key) {
     const isInRecovery = this.state.data.getIn(['routines', 'fullBodyWorkout', 'exercises', exerciseIndex, 'isInRecovery']);
-    const timeLengthOfExercise = this.state.data.getIn(['routines', 'fullBodyWorkout', 'exercises', exerciseIndex, 'timeLengthOfExercise']);
+    const timeLengthOfExercise = this.state.data.getIn(['routines', 'fullBodyWorkout', 'exercises', exerciseIndex, 'timeLengthOfExerciseCounter']);
     const timeBetweenSets = this.state.data.getIn(['routines', 'fullBodyWorkout', 'exercises', exerciseIndex, 'timeBetweenSets']);
 
     this.setState(prevState => ({
@@ -136,10 +137,10 @@ class App extends Component {
       ),
     }));
 
-    if (!isInRecovery && timeLengthOfExercise < 0) {
+    if (!isInRecovery && timeLengthOfExercise <= 0) {
       this.handleFinishedSetBtnClk(exerciseIndex);
     }
-    if (isInRecovery && timeBetweenSets < 0) {
+    if (isInRecovery && timeBetweenSets <= 0) {
       clearInterval(this.interval);
       this.resetTimer(exerciseIndex);
     }
@@ -156,11 +157,16 @@ class App extends Component {
         ['routines', 'fullBodyWorkout', 'exercises', exerciseIndex, 'isCountingDown'], false,
       ),
     }));
+    this.setState(prevState => ({
+      data: prevState.data.setIn(
+        ['routines', 'fullBodyWorkout', 'exercises', exerciseIndex, 'isInRecovery'], false,
+      ),
+    }));
   }
 
   handleStartTimerBtnClk(exerciseIndex) {
     this.startCountdown(exerciseIndex, false);
-    this.createInterval(exerciseIndex, 'timeLengthOfExercise');
+    this.createInterval(exerciseIndex, 'timeLengthOfExerciseCounter');
   }
 
   startCountdown(exerciseIndex, isInRecovery = false) {

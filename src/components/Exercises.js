@@ -29,6 +29,7 @@ const Exercises = (props) => {
     </div>
     <Exercise
       exercise={data.getIn(['routines', 'fullBodyWorkout', 'exercises', currentWorkout])}
+      currentWorkout={currentWorkout}
       handleFinishedSetBtnClk={props.handleFinishedSetBtnClk}
       handleStartTimerBtnClk={props.handleStartTimerBtnClk}
     />
