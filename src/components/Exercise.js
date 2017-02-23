@@ -5,62 +5,9 @@ class Exercise extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      timeBetweenSets: this.props.exercise.get('timeBetweenSets'),
-      timeLengthOfExercise: this.props.exercise.get('timeLengthOfExercise'),
-      isCountingDown: false,
-      isInRecovery: false,
     };
-    this.tick = this.tick.bind(this);
-    this.handleFinishedSetBtnClk = this.handleFinishedSetBtnClk.bind(this);
-    this.handleStartTimerBtnClk = this.handleStartTimerBtnClk.bind(this);
-    this.resetTimer = this.resetTimer.bind(this);
-    this.startCountdown = this.startCountdown.bind(this);
-    this.createInterval = this.createInterval.bind(this);
   }
 
-  tick(key) {
-    this.setState(prevState => ({
-      [key]: prevState[key] - 1,
-    }));
-    if (!this.state.isInRecovery && this.state.timeLengthOfExercise < 0) {
-      this.handleFinishedSetBtnClk();
-    }
-    if (this.state.isInRecovery && this.state.timeBetweenSets < 0) {
-      clearInterval(this.interval);
-      this.resetTimer();
-    }
-  }
-
-  resetTimer() {
-    this.setState({
-      timeBetweenSets: this.props.exercise.get('timeBetweenSets'),
-      isCountingDown: false,
-    });
-  }
-
-  handleFinishedSetBtnClk() {
-    this.props.handleFinishedSetBtnClk(this.props.currentWorkout);
-    this.resetTimer();
-    this.startCountdown(true);
-    this.createInterval('timeBetweenSets');
-  }
-
-  handleStartTimerBtnClk() {
-    this.startCountdown();
-    this.createInterval('timeLengthOfExercise');
-  }
-
-  startCountdown(isInRecovery = false) {
-    this.setState({
-      isCountingDown: true,
-      isInRecovery,
-    });
-  }
-
-  createInterval(counterValue) {
-    clearInterval(this.interval);
-    this.interval = setInterval(() => this.tick(counterValue), 1000);
-  }
 
   render() {
     const ex = this.props.exercise;
@@ -77,12 +24,12 @@ class Exercise extends React.Component {
      */
     let backgroundColor;
     let counterValue;
-    if (this.state.isInRecovery) {
+    if (ex.get('isInRecovery')) {
       backgroundColor = bgRed;
-      counterValue = this.state.timeBetweenSets;
-    } else if (this.state.isCountingDown) {
+      counterValue = ex.get('timeBetweenSets');
+    } else if (ex.get('isCountingDown')) {
       backgroundColor = bgOrange;
-      counterValue = this.state.timeLengthOfExercise;
+      counterValue = ex.get('timeLengthOfExercise');
     } else {
       backgroundColor = bgGreen;
       counterValue = '';
@@ -106,18 +53,24 @@ class Exercise extends React.Component {
         {ex.get('timeLengthOfExercise') !== undefined &&
           <p>{ex.get('timeLengthOfExercise')} sec hold</p>
         }
-        {this.state.isCountingDown &&
+        {ex.get('isCountingDown') &&
           <CountdownTimer
             remainingTime={counterValue}
           />
         }
-        {!this.state.isCountingDown && ex.get('timeLengthOfExercise') === undefined &&
-          <Button bsSize="large" onClick={this.handleFinishedSetBtnClk}>
+        {!ex.get('isCountingDown') && ex.get('timeLengthOfExercise') === undefined &&
+          <Button
+            bsSize="large"
+            onClick={() => this.props.handleFinishedSetBtnClk(this.props.currentWorkout)}
+          >
             Finished Set
           </Button>
         }
-        {!this.state.isCountingDown && ex.get('timeLengthOfExercise') !== undefined &&
-          <Button bsSize="large" onClick={this.handleStartTimerBtnClk}>
+        {!ex.get('isCountingDown') && ex.get('timeLengthOfExercise') !== undefined &&
+          <Button
+            bsSize="large"
+            onClick={() => this.props.handleStartTimerBtnClk(this.props.currentWorkout)}
+          >
             Start Timer
           </Button>
         }
@@ -182,6 +135,7 @@ Exercise.propTypes = {
     timeLengthOfExercise: React.PropTypes.number,
   }),
   handleFinishedSetBtnClk: React.PropTypes.func,
+  handleStartTimerBtnClk: React.PropTypes.func,
 };
 
 Exercise.defaultProps = {
@@ -196,6 +150,7 @@ Exercise.defaultProps = {
     },
   },
   handleFinishedSetBtnClk() {},
+  handleStartTimerBtnClk() {},
 };
 
 export default Exercise;

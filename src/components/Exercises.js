@@ -30,6 +30,7 @@ const Exercises = (props) => {
     <Exercise
       exercise={data.getIn(['routines', 'fullBodyWorkout', 'exercises', currentWorkout])}
       handleFinishedSetBtnClk={props.handleFinishedSetBtnClk}
+      handleStartTimerBtnClk={props.handleStartTimerBtnClk}
     />
     {/* {props.children && React.cloneElement(props.children, {
 
@@ -43,6 +44,7 @@ Exercises.propTypes = {
     getIn: React.PropTypes.function,
   }),
   handleFinishedSetBtnClk: React.PropTypes.func,
+  handleStartTimerBtnClk: React.PropTypes.func,
 };
 
 Exercises.defaultProps = {
@@ -52,6 +54,7 @@ Exercises.defaultProps = {
     name: '',
   },
   handleFinishedSetBtnClk() {},
+  handleStartTimerBtnClk() {},
 };
 
 export default Exercises;
