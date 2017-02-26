@@ -1,5 +1,7 @@
 import React from 'react';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
+
+import { previousExercise, nextExercise } from '../actions/actions';
 import NavLink from './NavLink';
 
 export const NavBarTop = () =>
@@ -21,14 +23,13 @@ export const NavBarTop = () =>
 export const NavBarBottom = props =>
   <Navbar fixedBottom>
     <Nav style={{ float: 'left', margin: 0 }}>
-      <NavItem eventKey={1} onClick={props.handlePreviousExercise}>Prev</NavItem>
+      <NavItem eventKey={1} onClick={() => props.dispatch(previousExercise(0, 0))}>Prev</NavItem>
     </Nav>
     <Nav pullRight style={{ float: 'right', marginRight: -15, margin: 0 }}>
-      <NavItem eventKey={1} onClick={props.handleNextExercise}>Next</NavItem>
+      <NavItem eventKey={1} onClick={() => props.dispatch(nextExercise(0, 0))}>Next</NavItem>
     </Nav>
   </Navbar>;
 
 NavBarBottom.propTypes = {
-  handleNextExercise: React.PropTypes.func,
-  handlePreviousExercise: React.PropTypes.func,
+  dispatch: React.PropTypes.func,
 };

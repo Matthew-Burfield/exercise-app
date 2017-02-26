@@ -4,7 +4,7 @@ import { Router, Route, hashHistory, IndexRoute } from 'react-router';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 
-import * as reducer from './reducers/reducer';
+import reducer from './reducers/reducer';
 import App from './App';
 import Dashboard from './components/Dashboard';
 import Exercises from './components/Exercises';
