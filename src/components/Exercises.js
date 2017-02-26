@@ -33,9 +33,6 @@ const Exercises = (props) => {
       handleFinishedSetBtnClk={props.handleFinishedSetBtnClk}
       handleStartTimerBtnClk={props.handleStartTimerBtnClk}
     />
-    {/* {props.children && React.cloneElement(props.children, {
-
-    })} */}
   </div>);
 };
 

@@ -22,20 +22,20 @@ const App = props =>
   </div>;
 
 const mapStateToProps = state => ({
-  data: state.data,
+  data: state,
 });
 
 const AppContainer = connect(mapStateToProps)(App);
 
 App.propTypes = {
   children: React.PropTypes.element,
-  data: React.PropTypes.shape,
+  data: React.PropTypes.shape({}),
   dispatch: React.PropTypes.func,
 };
 
 App.defaultProps = {
   children: [],
-  data: React.PropTypes.shape,
+  data: React.PropTypes.shape({}),
   dispatch: () => {},
 };
 

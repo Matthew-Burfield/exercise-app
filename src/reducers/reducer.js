@@ -13,50 +13,50 @@ const reducer = (state = defaultState, action) => {
 
     case INCREASE_CURRENT_SET:
     case NEXT_EXERCISE: {
-      const numExercises = this.state.data.getIn(['routines', 'fullBodyWorkout', 'exercises']).size - 1;
+      const numExercises = state.getIn(['routines', 'fullBodyWorkout', 'exercises']).size - 1;
 
-      let currentWorkout = this.state.data.get('currentWorkout');
+      let currentWorkout = state.get('currentWorkout');
       currentWorkout += 1;
       currentWorkout = currentWorkout > numExercises ? numExercises : currentWorkout;
 
-      return state.data.set('currentWorkout', currentWorkout);
+      return state.set('currentWorkout', currentWorkout);
     }
 
 
     case PREVIOUS_EXERCISE: {
-      let currentWorkout = this.state.data.get('currentWorkout');
+      let currentWorkout = state.get('currentWorkout');
       currentWorkout -= 1;
       currentWorkout = currentWorkout < 0 ? 0 : currentWorkout;
 
-      return state.data.set('currentWorkout', currentWorkout);
+      return state.set('currentWorkout', currentWorkout);
     }
 
 
     case RESET_EXERCISE_TIMER: {
-      state.data.setIn(
+      state.setIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timeBetweenSets'], 180,
       );
-      state.data.setIn(
+      state.setIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'isCountingDown'], false,
       );
-      return state.data.setIn(
+      return state.setIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'isInRecovery'], false,
       );
     }
 
 
     case START_EXERCISE_TIMER: {
-      state.data.setIn(
+      state.setIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'isCountingDown'], true,
       );
-      return state.data.setIn(
+      return state.setIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'isInRecovery'], false,
       );
     }
 
 
     case INCREASE_EXERCISE_TIMER: {
-      return state.data.updateIn(
+      return state.updateIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer'], val => val - 1,
       );
     }
