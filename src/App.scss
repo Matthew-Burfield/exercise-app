@@ -21,6 +21,10 @@ body {
     display: none;
   }
 
+/**
+ * TODO: Use flexbox with the .currentExercise div to allow the
+ * exercise contents to stretch to the container specs. (responsive design)
+ */
   .currentExercise {
     height: calc(100vh - 100px);
 
