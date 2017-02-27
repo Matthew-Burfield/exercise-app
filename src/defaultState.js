@@ -17,11 +17,15 @@ const defaultState = Map({
           reps: 1,
           timeBetweenSets: 180,
           timeLengthOfExercise: 30,
-          timeLengthOfExerciseCounter: 30,
           variations: ['Against Wall', 'Free Standing'],
           selectedVariation: 0,
-          isCountingDown: false,
-          isInRecovery: false,
+          timer: Map({
+            restPeriod: 180,
+            holdPeriod: 60,
+            preparationPeriod: 5,
+            isResting: false,
+            isHolding: false,
+          }),
         }),
         Map({
           name: 'Dip',
@@ -31,7 +35,10 @@ const defaultState = Map({
           timeBetweenSets: 180,
           variations: ['Assisted Ring Dips', 'Ring Dips', 'Weighted Ring Dips'],
           selectedVariation: 0,
-          isInRecovery: false,
+          timer: Map({
+            restPeriod: 180,
+            isResting: false,
+          }),
         }),
         Map({
           name: 'Row',
@@ -41,7 +48,10 @@ const defaultState = Map({
           timeBetweenSets: 180,
           variations: ['Normal Row'],
           selectedVariation: 0,
-          isInRecovery: false,
+          timer: Map({
+            restPeriod: 180,
+            isResting: false,
+          }),
         }),
         Map({
           name: 'Pullup',
@@ -51,7 +61,10 @@ const defaultState = Map({
           timeBetweenSets: 180,
           variations: ['Negative Pullup', 'Assisted Pullup', 'Full Ring Pullup', 'Ring Muscle Up'],
           selectedVariation: 2,
-          isInRecovery: false,
+          timer: Map({
+            restPeriod: 180,
+            isResting: false,
+          }),
         }),
         Map({
           name: 'Pushup',
@@ -61,7 +74,10 @@ const defaultState = Map({
           timeBetweenSets: 180,
           variations: ['Normal Pushup', 'Ring Pushup', 'Reverse Ring Pushup'],
           selectedVariation: 2,
-          isInRecovery: false,
+          timer: Map({
+            restPeriod: 180,
+            isResting: false,
+          }),
         }),
       ]),
     }),

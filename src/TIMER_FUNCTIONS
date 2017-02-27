@@ -1,0 +1,75 @@
+export const TimerFactory = (
+  dispatch,
+  exerciseId,
+  isInRecovery,
+  timeLengthOfExercise,
+  timeBetweenSets,
+) => {
+  let interval;
+  const shouldTimerEnd = () => {
+    if (
+      (!isInRecovery && timeLengthOfExercise <= 0) ||
+      (isInRecovery && timeBetweenSets <= 0)
+    ) {
+      return true;
+    }
+    return false;
+  };
+  const tick = () => {
+    dispatch(() => increaseExerciseTimer(0, exerciseId));
+    if (shouldTimerEnd()) {
+      this.clear();
+    }
+  };
+  const createInterval = () => {
+    interval = setInterval(tick, 1000);
+  };
+
+  return {
+    start() {
+      clearInterval(interval);
+      createInterval();
+    },
+    clear() {
+      clearInterval(interval);
+    },
+  };
+};
+
+export const tick = (exerciseIndex, key) => {
+  const isInRecovery = this.state.data.getIn(['routines', 'fullBodyWorkout', 'exercises', exerciseIndex, 'isInRecovery']);
+  const timeLengthOfExercise = this.state.data.getIn(['routines', 'fullBodyWorkout', 'exercises', exerciseIndex, 'timeLengthOfExerciseCounter']);
+  const timeBetweenSets = this.state.data.getIn(['routines', 'fullBodyWorkout', 'exercises', exerciseIndex, 'timeBetweenSets']);
+
+  this.setState(prevState => ({
+    data: prevState.data.updateIn(
+      ['routines', 'fullBodyWorkout', 'exercises', exerciseIndex, key], val => val - 1,
+    ),
+  }));
+
+  if (!isInRecovery && timeLengthOfExercise <= 0) {
+    this.handleFinishedSetBtnClk(exerciseIndex);
+  }
+  if (isInRecovery && timeBetweenSets <= 0) {
+    clearInterval(this.interval);
+    this.resetTimer(exerciseIndex);
+  }
+};
+
+export const resetTimer = (dispatch, routineId, exerciseId) => {
+  dispatch(resetExerciseTimer(routineId, exerciseId));
+};
+
+export const startCountdown = (dispatch, routineId, exerciseId, isInRecovery) => {
+  dispatch(startExerciseTimer(routineId, exerciseId, isInRecovery));
+};
+
+export const createInterval = (exerciseIndex, counterValue) => {
+  clearInterval(this.interval);
+  this.interval = setInterval(() => this.tick(exerciseIndex, counterValue), 1000);
+};
+
+export const handleStartTimerBtnClk = (exerciseId) => {
+  startCountdown(exerciseId, false);
+  createInterval(exerciseId, 'timeLengthOfExerciseCounter');
+};

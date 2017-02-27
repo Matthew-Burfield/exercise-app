@@ -1,122 +1,143 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
 
-class Exercise extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-    };
+import {
+  // increaseCurrentSet,
+  reducePreparationPeriod,
+  reduceHoldPeriod,
+  reduceRestPeriod,
+  addInterval,
+  createTimer,
+  clearTimer,
+} from '../actions/actions';
+import CountdownTimer from './CountdownTimer';
+
+/**
+ * We need to determine the background color, which changes to:
+ * red if we are in recovering inbetween sets
+ * orange if we are currently timing a static hold
+ * green if we are waiting for the user to start the next set
+ * @param  {Boolean} isInRecovery   Is true if the app is currently counting
+ *                                  down for rest between sets
+ * @param  {Boolean} isCountingDown Is true if the exercise is counting down a
+ *                                  static hold
+ * @return {[type]}                 Return the corresponding background HEX
+ *                                  value as a string
+ */
+const getBackgroundColour = (isInRecovery, isCountingDown) => {
+  const bgGreen = '#66BB6A';
+  const bgRed = '#EF5350';
+  const bgOrange = '#FFA726';
+
+  if (isInRecovery) {
+    return bgRed;
+  } else if (isCountingDown) {
+    return bgOrange;
   }
-
-
-  render() {
-    const ex = this.props.exercise;
-    const bgGreen = '#66BB6A';
-    const bgRed = '#EF5350';
-    const bgOrange = '#FFA726';
-
-
-    /**
-     * We need to determine the background color, which changes to:
-     *  red if we are in recovering inbetween sets
-     *  orange if we are currently timing a static hold
-     *  green if we are waiting for the user to start the next set
-     */
-    let backgroundColor;
-    let counterValue;
-    if (ex.get('isInRecovery')) {
-      backgroundColor = bgRed;
-      counterValue = ex.get('timeBetweenSets');
-    } else if (ex.get('isCountingDown')) {
-      backgroundColor = bgOrange;
-      counterValue = ex.get('timeLengthOfExerciseCounter');
-    } else {
-      backgroundColor = bgGreen;
-      counterValue = '';
-    }
-
-
-    return (<div>
-      <div className="currentExercise" style={{ backgroundColor }}>
-        <div><p className="title"><b className="name">Name: </b>{ex.get('name')}</p></div>
-        <div><p><b className="sets">Sets:</b> {ex.get('currSets')}/{ex.get('sets')}</p></div>
-        <div><p><b className="reps">Reps:</b> {ex.get('reps')}</p></div>
-        {/* {ex.selectedVariation !== '' && ex.variations.length > 0 &&
-          <p><b>Current Variation:</b> {ex.variations[ex.selectedVariation]}</p>
-        } */}
-        {ex.get('weight') &&
-          <div><p><b className="weights">weight:</b> {ex.get('weight')}</p></div>
-        }
-        {ex.get('timeLengthOfExercise') !== undefined &&
-          <div><p>{ex.get('timeLengthOfExercise')} sec hold</p></div>
-        }
-        {ex.get('isCountingDown') &&
-          <CountdownTimer
-            remainingTime={counterValue}
-          />
-        }
-        {!ex.get('isCountingDown') && ex.get('timeLengthOfExerciseCounter') === undefined &&
-          <Button
-            bsSize="large"
-            onClick={() => this.props.handleFinishedSetBtnClk(this.props.currentWorkout)}
-          >
-            Finished Set
-          </Button>
-        }
-        {!ex.get('isCountingDown') && ex.get('timeLengthOfExerciseCounter') !== undefined &&
-          <Button
-            bsSize="large"
-            onClick={() => this.props.handleStartTimerBtnClk(this.props.currentWorkout)}
-          >
-            Start Timer
-          </Button>
-        }
-      </div>
-    </div>);
-  }
-}
+  return bgGreen;
+};
 
 
 /**
- * When displaying the counter, we want the seconds
- * remaining to display with two digits. I.e. 6 seconds
- * remaining should display as 06.
- * @param {[Integer]} number [The display number]
+ * [getCounterValue description]
+ * @param  {Boolean} isInRecovery                [description]
+ * @param  {Boolean} isCountingDown              [description]
+ * @param  {[type]}  timeBetweenSetsm            [description]
+ * @param  {[type]}  timeLengthOfExerciseCounter [description]
+ * @return {[type]}                              [description]
  */
-const addLeadingZerosToNumber = (number) => {
-  let returnVal;
-  if (number.toString().length === 1) {
-    returnVal = `0${number}`;
+const getCounterValue = (
+  isInRecovery,
+  isCountingDown,
+  timeBetweenSetsm,
+  timeLengthOfExerciseCounter,
+) => {
+  if (isInRecovery) {
+    return timeBetweenSetsm;
+  } else if (isCountingDown) {
+    return timeLengthOfExerciseCounter;
+  }
+  return '';
+};
+
+
+export const tick = (dispatch, timer, exerciseId) => {
+  const preparationPeriod = timer.get('preparationPeriod');
+  const holdPeriod = timer.get('holdPeriod');
+  const restPeriod = timer.get('restPeriod');
+
+  if (preparationPeriod > 0) {
+    dispatch(reducePreparationPeriod(exerciseId));
+  } else if (holdPeriod > 0) {
+    dispatch(reduceHoldPeriod(exerciseId));
+  } else if (restPeriod > 0) {
+    dispatch(reduceRestPeriod(exerciseId));
   } else {
-    returnVal = number;
+    // All counting has finished.
+    clearInterval(timer.get('interval'));
+    dispatch(clearTimer(exerciseId));
   }
-  return returnVal;
 };
 
 
-/**
- * Display the countdown timer
- * @param {[type]} props [contains the time remaining in the countdown]
- */
-const CountdownTimer = (props) => {
-  const minUntilNextSet = Math.floor((props.remainingTime % (60 * 60)) / 60);
-  const secUntilNextSet = addLeadingZerosToNumber(Math.floor(props.remainingTime % 60));
+const handleClick = (dispatch, exercise, exerciseId) => {
+  dispatch(createTimer(exerciseId));
+  const interval = setInterval(() => tick(
+    dispatch,
+    exercise.get('timer'),
+    exerciseId,
+  ), 1000);
+  dispatch(addInterval(exerciseId, interval));
+};
 
-  return (
-    <div className="setCountdownTimer">
-      <p className="mobile">
-        {minUntilNextSet} : {secUntilNextSet}
-      </p>
-      <p className="desktop">
-        <b>Time in between sets: </b>{minUntilNextSet} min {secUntilNextSet} sec
-      </p>
-    </div>
+
+const Exercise = ({ exercise, dispatch, currentWorkout }) => {
+  const isInRecovery = exercise.get('isInRecovery');
+  const isCountingDown = exercise.get('isCountingDown');
+  const timeLengthOfExerciseCounter = exercise.get('timeLengthOfExerciseCounter');
+  const backgroundColor = getBackgroundColour(
+    isInRecovery,
+    isCountingDown,
   );
+  const counterValue = getCounterValue(
+    isInRecovery,
+    isCountingDown,
+    exercise.get('timeBetweenSets'),
+    timeLengthOfExerciseCounter,
+  );
+
+  return (<div>
+    <div className="currentExercise" style={{ backgroundColor }}>
+      <div><p className="title"><b className="name">Name: </b>{exercise.get('name')}</p></div>
+      <div><p><b className="sets">Sets:</b> {exercise.get('currSets')}/{exercise.get('sets')}</p></div>
+      <div><p><b className="reps">Reps:</b> {exercise.get('reps')}</p></div>
+      {/* {ex.selectedVariation !== '' && ex.variations.length > 0 &&
+        <p><b>Current Variation:</b> {ex.variations[ex.selectedVariation]}</p>
+      } */}
+      {exercise.get('weight') &&
+        <div><p><b className="weights">weight:</b> {exercise.get('weight')}</p></div>
+      }
+      {exercise.get('timeLengthOfExercise') !== undefined &&
+        <div><p>{exercise.get('timeLengthOfExercise')} sec hold</p></div>
+      }
+      {isCountingDown &&
+        <CountdownTimer
+          remainingTime={counterValue}
+        />
+      }
+      {!isCountingDown && timeLengthOfExerciseCounter === undefined &&
+        <Button
+          bsSize="large"
+          onClick={() => handleClick(dispatch, exercise, currentWorkout)}
+        >
+          {timeLengthOfExerciseCounter === undefined && 'Finished Set'}
+          {timeLengthOfExerciseCounter !== undefined && 'Start Timer'}
+        </Button>
+      }
+    </div>
+  </div>);
 };
 
-CountdownTimer.propTypes = {
-  remainingTime: React.PropTypes.number.isRequired,
-};
 
 Exercise.propTypes = {
   currentWorkout: React.PropTypes.number,
@@ -131,9 +152,9 @@ Exercise.propTypes = {
     weight: React.PropTypes.number,
     timeLengthOfExercise: React.PropTypes.number,
   }),
-  handleFinishedSetBtnClk: React.PropTypes.func,
-  handleStartTimerBtnClk: React.PropTypes.func,
+  dispatch: React.PropTypes.func,
 };
+
 
 Exercise.defaultProps = {
   currentWorkout: 0,
@@ -146,8 +167,7 @@ Exercise.defaultProps = {
       return '';
     },
   },
-  handleFinishedSetBtnClk() {},
-  handleStartTimerBtnClk() {},
+  dispatch: () => {},
 };
 
 export default Exercise;

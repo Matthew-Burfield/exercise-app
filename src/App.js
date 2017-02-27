@@ -4,20 +4,16 @@ import { connect } from 'react-redux';
 import { NavBarTop, NavBarBottom } from './components/NavBar';
 import './App.scss';
 
-function placeholder() {
-  return null;
-}
 
-const App = props =>
+const App = ({ data, dispatch, children }) =>
   <div className="App">
     <NavBarTop />
-    {props.children && React.cloneElement(props.children, {
-      data: props.data,
-      handleFinishedSetBtnClk: placeholder,
-      handleStartTimerBtnClk: placeholder,
+    {children && React.cloneElement(children, {
+      data,
+      dispatch,
     })}
     <NavBarBottom
-      dispatch={props.dispatch}
+      dispatch={dispatch}
     />
   </div>;
 

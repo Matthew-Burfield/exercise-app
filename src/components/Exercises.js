@@ -3,8 +3,7 @@ import NavLink from './NavLink';
 import Exercise from './Exercise';
 
 
-const Exercises = (props) => {
-  const data = props.data;
+const Exercises = ({ data, dispatch }) => {
   const currentWorkout = data.get('currentWorkout');
 
   return (<div>
@@ -30,8 +29,7 @@ const Exercises = (props) => {
     <Exercise
       exercise={data.getIn(['routines', 'fullBodyWorkout', 'exercises', currentWorkout])}
       currentWorkout={currentWorkout}
-      handleFinishedSetBtnClk={props.handleFinishedSetBtnClk}
-      handleStartTimerBtnClk={props.handleStartTimerBtnClk}
+      dispatch={dispatch}
     />
   </div>);
 };
@@ -41,8 +39,7 @@ Exercises.propTypes = {
   data: React.PropTypes.shape({
     getIn: React.PropTypes.function,
   }),
-  handleFinishedSetBtnClk: React.PropTypes.func,
-  handleStartTimerBtnClk: React.PropTypes.func,
+  dispatch: React.PropTypes.func,
 };
 
 Exercises.defaultProps = {
@@ -51,8 +48,7 @@ Exercises.defaultProps = {
   params: {
     name: '',
   },
-  handleFinishedSetBtnClk() {},
-  handleStartTimerBtnClk() {},
+  dispatch: () => {},
 };
 
 export default Exercises;

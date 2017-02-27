@@ -12,6 +12,12 @@ const reducer = (state = defaultState, action) => {
   switch (action.type) {
 
     case INCREASE_CURRENT_SET:
+      return state.updateIn(
+        ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'currSets'],
+        val => val + 1,
+      );
+
+
     case NEXT_EXERCISE: {
       const numExercises = state.getIn(['routines', 'fullBodyWorkout', 'exercises']).size - 1;
 
