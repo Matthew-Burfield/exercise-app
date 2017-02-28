@@ -3,12 +3,13 @@ import { Button } from 'react-bootstrap';
 
 import {
   // increaseCurrentSet,
-  reducePreparationPeriod,
-  reduceHoldPeriod,
-  reduceRestPeriod,
-  addInterval,
+  // reducePreparationPeriod,
+  // reduceHoldPeriod,
+  // reduceRestPeriod,
+  // addInterval,
   createTimer,
-  clearTimer,
+  updateCount,
+  // clearTimer,
 } from '../actions/actions';
 import CountdownTimer from './CountdownTimer';
 
@@ -99,7 +100,7 @@ const Exercise = (props) => {
   const isInRecovery = exercise.get('isInRecovery');
   const isCountingDown = exercise.get('isCountingDown');
 
-  const countVal = exercise.getIn(['timer', 'isHolding']);
+  const countVal = exercise.get('timer');
   const timeLengthOfExerciseCounter = exercise.get('timeLengthOfExerciseCounter');
   const backgroundColor = getBackgroundColour(
     isInRecovery,
@@ -113,33 +114,40 @@ const Exercise = (props) => {
   );
 
 
-  const tick = (exerciseId) => {
-    console.log(props);
-    const timer = exercise.get('timer');
-    const preparationPeriod = timer.get('preparationPeriod');
-    const holdPeriod = timer.get('holdPeriod');
-    const restPeriod = timer.get('restPeriod');
-
-    if (preparationPeriod > 0) {
-      dispatch(reducePreparationPeriod(exerciseId));
-    } else if (holdPeriod > 0) {
-      dispatch(reduceHoldPeriod(exerciseId));
-    } else if (restPeriod > 0) {
-      dispatch(reduceRestPeriod(exerciseId));
-    } else {
-      // All counting has finished.
-      clearInterval(timer.get('interval'));
-      dispatch(clearTimer(exerciseId));
-    }
-  };
+  // const tick = (exerciseId) => {
+  //   // console.log(props);
+  //   const timer = exercise.get('timer');
+  //   const preparationPeriod = timer.get('preparationPeriod');
+  //   const holdPeriod = timer.get('holdPeriod');
+  //   const restPeriod = timer.get('restPeriod');
+  //
+  //   if (preparationPeriod > 0) {
+  //     dispatch(reducePreparationPeriod(exerciseId));
+  //   } else if (holdPeriod > 0) {
+  //     dispatch(reduceHoldPeriod(exerciseId));
+  //   } else if (restPeriod > 0) {
+  //     dispatch(reduceRestPeriod(exerciseId));
+  //   } else {
+  //     // All counting has finished.
+  //     clearInterval(timer.get('interval'));
+  //     dispatch(clearTimer(exerciseId));
+  //   }
+  // };
 
 
   const handleClick = (exerciseId) => {
     dispatch(createTimer(exerciseId));
-    const interval = setInterval(() => tick(
-      exerciseId,
-    ), 1000);
-    dispatch(addInterval(exerciseId, interval));
+    // const interval = setInterval(() => tick(
+    //   exerciseId,
+    // ), 1000);
+    // dispatch(addInterval(exerciseId, interval));
+  };
+
+  const getCountValue = () => {
+    const timer = exercise.get('timer');
+    const timeDiff = timer ? (new Date() - timer.get('preparationPeriod')) / 1000 : '';
+    dispatch(updateCount(currentWorkout, timeDiff));
+    return timeDiff;
   };
 
   return (<div>
@@ -170,7 +178,7 @@ const Exercise = (props) => {
           {timeLengthOfExerciseCounter !== undefined && 'Start Timer'}
         </Button>
       }
-      {countVal && <h1>BOOB</h1>}
+      {countVal && getCountValue()}
     </div>
   </div>);
 };

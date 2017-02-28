@@ -8,6 +8,7 @@ import {
   START_EXERCISE_TIMER,
   INCREASE_EXERCISE_TIMER,
   CREATE_TIMER,
+  UPDATE_COUNT,
 } from '../actions/actions';
 import defaultState from '../defaultState';
 
@@ -72,23 +73,20 @@ const reducer = (state = defaultState, action) => {
 
 
     case CREATE_TIMER: {
-      const defaultHoldPeriod = state.getIn(
-        ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'holdPeriod'],
-      );
-      const defaultPreparationPeriod = state.getIn(
-        ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'preparationPeriod'],
-      );
-      const defaultRestPeriod = state.getIn(
-        ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'restPeriod'],
-      );
       return state.setIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer'], Map({
-          preparationPeriod: defaultPreparationPeriod || 0,
-          holdPeriod: defaultHoldPeriod || 0,
-          restPeriod: defaultRestPeriod || 0,
-          isHolding: true,
-          isResting: false,
+          preparationPeriod: new Date(),
+          holdPeriod: undefined,
+          restPeriod: undefined,
         }),
+      );
+    }
+
+
+    case UPDATE_COUNT: {
+      return state.setIn(
+        ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'dateDiff'],
+        action.dateDiff,
       );
     }
 

@@ -7,6 +7,7 @@ export const REDUCE_REST_PERIOD = 'REDUCE_REST_PERIOD';
 export const CLEAR_TIMER = 'CLEAR_TIMER';
 export const CREATE_TIMER = 'CREATE_TIMER';
 export const ADD_INTERVAL = 'ADD_INTERVAL';
+export const UPDATE_COUNT = 'UPDATE_COUNT';
 
 
 export const increaseCurrentSet = exerciseId => ({
@@ -61,4 +62,11 @@ export const addInterval = (exerciseId, interval) => ({
   type: ADD_INTERVAL,
   exerciseId,
   interval,
+});
+
+
+export const updateCount = (exerciseId, dateDiff) => ({
+  type: ADD_INTERVAL,
+  exerciseId,
+  dateDiff,
 });
