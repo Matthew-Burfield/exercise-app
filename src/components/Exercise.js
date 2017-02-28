@@ -149,38 +149,6 @@ const Exercise = (props) => {
     dispatch(updateCount(currentWorkout, timeDiff));
     return timeDiff;
   };
-
-  return (<div>
-    <div className="currentExercise" style={{ backgroundColor }}>
-      <div><p className="title"><b className="name">Name: </b>{exercise.get('name')}</p></div>
-      <div><p><b className="sets">Sets:</b> {exercise.get('currSets')}/{exercise.get('sets')}</p></div>
-      <div><p><b className="reps">Reps:</b> {exercise.get('reps')}</p></div>
-      {/* {ex.selectedVariation !== '' && ex.variations.length > 0 &&
-        <p><b>Current Variation:</b> {ex.variations[ex.selectedVariation]}</p>
-      } */}
-      {exercise.get('weight') &&
-        <div><p><b className="weights">weight:</b> {exercise.get('weight')}</p></div>
-      }
-      {exercise.get('timeLengthOfExercise') !== undefined &&
-        <div><p>{exercise.get('timeLengthOfExercise')} sec hold</p></div>
-      }
-      {isCountingDown &&
-        <CountdownTimer
-          remainingTime={counterValue}
-        />
-      }
-      {!isCountingDown && timeLengthOfExerciseCounter === undefined &&
-        <Button
-          bsSize="large"
-          onClick={() => handleClick(currentWorkout)}
-        >
-          {timeLengthOfExerciseCounter === undefined && 'Finished Set'}
-          {timeLengthOfExerciseCounter !== undefined && 'Start Timer'}
-        </Button>
-      }
-      {countVal && getCountValue()}
-    </div>
-  </div>);
 };
 
 export default Exercise;
