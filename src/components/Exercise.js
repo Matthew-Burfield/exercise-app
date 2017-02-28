@@ -61,39 +61,45 @@ const getCounterValue = (
 };
 
 
-export const tick = (dispatch, timer, exerciseId) => {
-  const preparationPeriod = timer.get('preparationPeriod');
-  const holdPeriod = timer.get('holdPeriod');
-  const restPeriod = timer.get('restPeriod');
+const Exercise = (props) => {
+  const { exercise, dispatch, currentWorkout } = props;
 
-  if (preparationPeriod > 0) {
-    dispatch(reducePreparationPeriod(exerciseId));
-  } else if (holdPeriod > 0) {
-    dispatch(reduceHoldPeriod(exerciseId));
-  } else if (restPeriod > 0) {
-    dispatch(reduceRestPeriod(exerciseId));
-  } else {
-    // All counting has finished.
-    clearInterval(timer.get('interval'));
-    dispatch(clearTimer(exerciseId));
-  }
-};
-
-
-const handleClick = (dispatch, exercise, exerciseId) => {
-  dispatch(createTimer(exerciseId));
-  const interval = setInterval(() => tick(
-    dispatch,
-    exercise.get('timer'),
-    exerciseId,
-  ), 1000);
-  dispatch(addInterval(exerciseId, interval));
-};
+  Exercise.propTypes = {
+    currentWorkout: React.PropTypes.number,
+    exercise: React.PropTypes.shape({
+      get: React.PropTypes.func,
+      sets: React.PropTypes.number,
+      currSets: React.PropTypes.number,
+      reps: React.PropTypes.number,
+      timeUntilNextSet: React.PropTypes.number,
+      variations: React.PropTypes.arrayOf(React.PropTypes.string),
+      selectedVariation: React.PropTypes.number,
+      weight: React.PropTypes.number,
+      timeLengthOfExercise: React.PropTypes.number,
+    }),
+    dispatch: React.PropTypes.func,
+  };
 
 
-const Exercise = ({ exercise, dispatch, currentWorkout }) => {
+  Exercise.defaultProps = {
+    currentWorkout: 0,
+    exercise: {
+      name: '',
+      sets: 0,
+      currSets: 0,
+      reps: 0,
+      get() {
+        return '';
+      },
+    },
+    dispatch: () => {},
+  };
+
+
   const isInRecovery = exercise.get('isInRecovery');
   const isCountingDown = exercise.get('isCountingDown');
+
+  const countVal = exercise.getIn(['timer', 'isHolding']);
   const timeLengthOfExerciseCounter = exercise.get('timeLengthOfExerciseCounter');
   const backgroundColor = getBackgroundColour(
     isInRecovery,
@@ -105,6 +111,36 @@ const Exercise = ({ exercise, dispatch, currentWorkout }) => {
     exercise.get('timeBetweenSets'),
     timeLengthOfExerciseCounter,
   );
+
+
+  const tick = (exerciseId) => {
+    console.log(props);
+    const timer = exercise.get('timer');
+    const preparationPeriod = timer.get('preparationPeriod');
+    const holdPeriod = timer.get('holdPeriod');
+    const restPeriod = timer.get('restPeriod');
+
+    if (preparationPeriod > 0) {
+      dispatch(reducePreparationPeriod(exerciseId));
+    } else if (holdPeriod > 0) {
+      dispatch(reduceHoldPeriod(exerciseId));
+    } else if (restPeriod > 0) {
+      dispatch(reduceRestPeriod(exerciseId));
+    } else {
+      // All counting has finished.
+      clearInterval(timer.get('interval'));
+      dispatch(clearTimer(exerciseId));
+    }
+  };
+
+
+  const handleClick = (exerciseId) => {
+    dispatch(createTimer(exerciseId));
+    const interval = setInterval(() => tick(
+      exerciseId,
+    ), 1000);
+    dispatch(addInterval(exerciseId, interval));
+  };
 
   return (<div>
     <div className="currentExercise" style={{ backgroundColor }}>
@@ -128,46 +164,15 @@ const Exercise = ({ exercise, dispatch, currentWorkout }) => {
       {!isCountingDown && timeLengthOfExerciseCounter === undefined &&
         <Button
           bsSize="large"
-          onClick={() => handleClick(dispatch, exercise, currentWorkout)}
+          onClick={() => handleClick(currentWorkout)}
         >
           {timeLengthOfExerciseCounter === undefined && 'Finished Set'}
           {timeLengthOfExerciseCounter !== undefined && 'Start Timer'}
         </Button>
       }
+      {countVal && <h1>BOOB</h1>}
     </div>
   </div>);
-};
-
-
-Exercise.propTypes = {
-  currentWorkout: React.PropTypes.number,
-  exercise: React.PropTypes.shape({
-    get: React.PropTypes.func,
-    sets: React.PropTypes.number,
-    currSets: React.PropTypes.number,
-    reps: React.PropTypes.number,
-    timeUntilNextSet: React.PropTypes.number,
-    variations: React.PropTypes.arrayOf(React.PropTypes.string),
-    selectedVariation: React.PropTypes.number,
-    weight: React.PropTypes.number,
-    timeLengthOfExercise: React.PropTypes.number,
-  }),
-  dispatch: React.PropTypes.func,
-};
-
-
-Exercise.defaultProps = {
-  currentWorkout: 0,
-  exercise: {
-    name: '',
-    sets: 0,
-    currSets: 0,
-    reps: 0,
-    get() {
-      return '';
-    },
-  },
-  dispatch: () => {},
 };
 
 export default Exercise;

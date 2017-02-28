@@ -1,3 +1,5 @@
+import { Map } from 'immutable';
+
 import {
   INCREASE_CURRENT_SET,
   NEXT_EXERCISE,
@@ -5,6 +7,7 @@ import {
   RESET_EXERCISE_TIMER,
   START_EXERCISE_TIMER,
   INCREASE_EXERCISE_TIMER,
+  CREATE_TIMER,
 } from '../actions/actions';
 import defaultState from '../defaultState';
 
@@ -66,6 +69,30 @@ const reducer = (state = defaultState, action) => {
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer'], val => val - 1,
       );
     }
+
+
+    case CREATE_TIMER: {
+      const defaultHoldPeriod = state.getIn(
+        ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'holdPeriod'],
+      );
+      const defaultPreparationPeriod = state.getIn(
+        ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'preparationPeriod'],
+      );
+      const defaultRestPeriod = state.getIn(
+        ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'restPeriod'],
+      );
+      return state.setIn(
+        ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer'], Map({
+          preparationPeriod: defaultPreparationPeriod || 0,
+          holdPeriod: defaultHoldPeriod || 0,
+          restPeriod: defaultRestPeriod || 0,
+          isHolding: true,
+          isResting: false,
+        }),
+      );
+    }
+
+
     default:
       return state;
   }
