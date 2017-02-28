@@ -4,8 +4,11 @@ import { Button } from 'react-bootstrap';
 import {
   // increaseCurrentSet,
   reducePreparationPeriod,
+  removePreparationPeriod,
   reduceHoldPeriod,
+  removeHoldPeriod,
   reduceRestPeriod,
+  removeRestPeriod,
   addInterval,
   createTimer,
   clearTimer,
@@ -81,21 +84,34 @@ class Exercise extends React.Component {
 
   tick() {
     // console.log(props);
-    const timer = this.props.exercise.get('timer');
+    const { dispatch, currentWorkout, exercise } = this.props;
+    const timer = exercise.get('timer');
     const preparationPeriod = timer.get('preparationPeriod');
     const holdPeriod = timer.get('holdPeriod');
     const restPeriod = timer.get('restPeriod');
 
-    if (preparationPeriod > 0) {
-      this.props.dispatch(reducePreparationPeriod(this.props.currentWorkout));
-    } else if (holdPeriod > 0) {
-      this.props.dispatch(reduceHoldPeriod(this.props.currentWorkout));
-    } else if (restPeriod > 0) {
-      this.props.dispatch(reduceRestPeriod(this.props.currentWorkout));
+    if (preparationPeriod !== undefined) {
+      if (preparationPeriod === 0) {
+        dispatch(removePreparationPeriod(currentWorkout));
+      } else {
+        dispatch(reducePreparationPeriod(currentWorkout));
+      }
+    } else if (holdPeriod !== undefined) {
+      if (holdPeriod === 0) {
+        dispatch(removeHoldPeriod(currentWorkout));
+      } else {
+        dispatch(reduceHoldPeriod(currentWorkout));
+      }
+    } else if (restPeriod !== undefined) {
+      if (restPeriod === 0) {
+        dispatch(removeRestPeriod(currentWorkout));
+      } else {
+        dispatch(reduceRestPeriod(currentWorkout));
+      }
     } else {
       // All counting has finished.
       clearInterval(timer.get('interval'));
-      this.props.dispatch(clearTimer(this.props.currentWorkout));
+      dispatch(clearTimer(currentWorkout));
     }
   }
 
@@ -109,19 +125,21 @@ class Exercise extends React.Component {
 
   render() {
     const { exercise } = this.props;
-    const isInRecovery = exercise.get('isInRecovery');
-    const isCountingDown = exercise.get('isCountingDown');
     const timer = exercise.get('timer');
-    const timeLengthOfExerciseCounter = exercise.get('timeLengthOfExerciseCounter');
-    const backgroundColor = getBackgroundColour(
-      isInRecovery,
-      isCountingDown,
-    );
-    const remainingTime =
-      exercise.getIn(['timer', 'preparationPeriod']) ||
-      exercise.getIn(['timer', 'holdPeriod']) ||
-      exercise.getIn(['timer', 'restPeriod']) ||
-      '';
+    const backgroundColor = getBackgroundColour();
+
+    let remainingTime;
+    if (timer) {
+      if (timer.get('preparationPeriod') !== undefined) {
+        remainingTime = timer.get('preparationPeriod');
+      } else if (timer.get('holdPeriod') !== undefined) {
+        remainingTime = timer.get('holdPeriod');
+      } else if (timer.get('restPeriod') !== undefined) {
+        remainingTime = timer.get('restPeriod');
+      } else {
+        remainingTime = 0;
+      }
+    }
 
 
     return (<div>
@@ -148,8 +166,7 @@ class Exercise extends React.Component {
             bsSize="large"
             onClick={this.handleClick}
           >
-            {timeLengthOfExerciseCounter === undefined && 'Finished Set'}
-            {timeLengthOfExerciseCounter !== undefined && 'Start Timer'}
+            Finished Set
           </Button>
         }
       </div>

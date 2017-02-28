@@ -4,6 +4,9 @@ export const PREVIOUS_EXERCISE = 'PREVIOUS_EXERCISE';
 export const REDUCE_PREPARATION_PERIOD = 'REDUCE_PREPARATION_PERIOD';
 export const REDUCE_HOLD_PERIOD = 'REDUCE_HOLD_PERIOD';
 export const REDUCE_REST_PERIOD = 'REDUCE_REST_PERIOD';
+export const REMOVE_PREPARATION_PERIOD = 'REMOVE_PREPARATION_PERIOD';
+export const REMOVE_HOLD_PERIOD = 'REMOVE_HOLD_PERIOD';
+export const REMOVE_REST_PERIOD = 'REMOVE_REST_PERIOD';
 export const CLEAR_TIMER = 'CLEAR_TIMER';
 export const CREATE_TIMER = 'CREATE_TIMER';
 export const ADD_INTERVAL = 'ADD_INTERVAL';
@@ -46,6 +49,24 @@ export const reduceRestPeriod = exerciseId => ({
 });
 
 
+export const removePreparationPeriod = exerciseId => ({
+  type: REMOVE_PREPARATION_PERIOD,
+  exerciseId,
+});
+
+
+export const removeHoldPeriod = exerciseId => ({
+  type: REMOVE_HOLD_PERIOD,
+  exerciseId,
+});
+
+
+export const removeRestPeriod = exerciseId => ({
+  type: REMOVE_REST_PERIOD,
+  exerciseId,
+});
+
+
 export const clearTimer = exerciseId => ({
   type: CLEAR_TIMER,
   exerciseId,
@@ -62,11 +83,4 @@ export const addInterval = (exerciseId, interval) => ({
   type: ADD_INTERVAL,
   exerciseId,
   interval,
-});
-
-
-export const updateCount = (exerciseId, dateDiff) => ({
-  type: ADD_INTERVAL,
-  exerciseId,
-  dateDiff,
 });

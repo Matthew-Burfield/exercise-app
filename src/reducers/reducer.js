@@ -11,6 +11,9 @@ import {
   REDUCE_PREPARATION_PERIOD,
   REDUCE_HOLD_PERIOD,
   REDUCE_REST_PERIOD,
+  REMOVE_PREPARATION_PERIOD,
+  REMOVE_HOLD_PERIOD,
+  REMOVE_REST_PERIOD,
 } from '../actions/actions';
 import defaultState from '../defaultState';
 
@@ -95,7 +98,12 @@ const reducer = (state = defaultState, action) => {
     case REDUCE_PREPARATION_PERIOD: {
       return state.updateIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'preparationPeriod'],
-        val => val - 1,
+        (val) => {
+          if (val > 0) {
+            return val - 1;
+          }
+          return val;
+        },
       );
     }
 
@@ -103,7 +111,12 @@ const reducer = (state = defaultState, action) => {
     case REDUCE_HOLD_PERIOD: {
       return state.updateIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'holdPeriod'],
-        val => val - 1,
+        (val) => {
+          if (val > 0) {
+            return val - 1;
+          }
+          return val;
+        },
       );
     }
 
@@ -111,7 +124,33 @@ const reducer = (state = defaultState, action) => {
     case REDUCE_REST_PERIOD: {
       return state.updateIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'restPeriod'],
-        val => val - 1,
+        (val) => {
+          if (val > 0) {
+            return val - 1;
+          }
+          return val;
+        },
+      );
+    }
+
+
+    case REMOVE_PREPARATION_PERIOD: {
+      return state.deleteIn(
+        ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'preparationPeriod'],
+      );
+    }
+
+
+    case REMOVE_HOLD_PERIOD: {
+      return state.deleteIn(
+        ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'holdPeriod'],
+      );
+    }
+
+
+    case REMOVE_REST_PERIOD: {
+      return state.deleteIn(
+        ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'restPeriod'],
       );
     }
 
