@@ -12,6 +12,7 @@ import {
   addInterval,
   createTimer,
   clearTimer,
+  updateTimerOnMount,
 } from '../actions/actions';
 import CountdownTimer from './CountdownTimer';
 
@@ -47,6 +48,7 @@ class Exercise extends React.Component {
     currentWorkout: React.PropTypes.number,
     exercise: React.PropTypes.shape({
       get: React.PropTypes.func,
+      getIn: React.PropTypes.func,
       sets: React.PropTypes.number,
       currSets: React.PropTypes.number,
       reps: React.PropTypes.number,
@@ -82,8 +84,24 @@ class Exercise extends React.Component {
   }
 
 
+  componentDidUpdate(prevProps) {
+    const { dispatch, currentWorkout, exercise } = this.props;
+    if (prevProps.exercise.get('name') !== exercise.get('name')) {
+      clearInterval(prevProps.exercise.getIn(['timer', 'interval']));
+      // TODO: dispatch(removeInterval(this.props.currentWorkout));
+      //
+      const timer = exercise.get('timer');
+      if (timer) {
+        const dateDiff = (new Date() - timer.get('timerStarted')) / 1000;
+        dispatch(updateTimerOnMount(this.props.currentWorkout, dateDiff));
+        const interval = setInterval(this.tick, 1000);
+        dispatch(addInterval(currentWorkout, interval));
+      }
+    }
+  }
+
+
   tick() {
-    // console.log(props);
     const { dispatch, currentWorkout, exercise } = this.props;
     const timer = exercise.get('timer');
     const preparationPeriod = timer.get('preparationPeriod');

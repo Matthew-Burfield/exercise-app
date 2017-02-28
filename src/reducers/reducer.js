@@ -14,6 +14,8 @@ import {
   REMOVE_PREPARATION_PERIOD,
   REMOVE_HOLD_PERIOD,
   REMOVE_REST_PERIOD,
+  ADD_INTERVAL,
+  UPDATE_TIMER_ON_MOUNT,
 } from '../actions/actions';
 import defaultState from '../defaultState';
 
@@ -87,6 +89,7 @@ const reducer = (state = defaultState, action) => {
       const restPeriod = exercise.get('restPeriod');
       return state.setIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer'], Map({
+          timerStarted: new Date(),
           preparationPeriod: preparationPeriod || 0,
           holdPeriod: holdPeriod || 0,
           restPeriod: restPeriod || 0,
@@ -152,6 +155,58 @@ const reducer = (state = defaultState, action) => {
       return state.deleteIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'restPeriod'],
       );
+    }
+
+
+    case ADD_INTERVAL: {
+      return state.setIn(
+        ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'interval'],
+        action.interval,
+      );
+    }
+
+
+    case UPDATE_TIMER_ON_MOUNT: {
+      const exercise = state.getIn(
+        ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer'],
+      );
+      const preparationPeriod = exercise.get('preparationPeriod');
+      const holdPeriod = exercise.get('holdPeriod');
+      const restPeriod = exercise.get('restPeriod');
+      let newPreparationPeriod = 0;
+      let newHoldPeriod = 0;
+      let newRestPeriod = 0;
+
+      if (preparationPeriod > 0) {
+        newPreparationPeriod = preparationPeriod - action.timeDiffInSec;
+      }
+      if (holdPeriod > 0 && newPreparationPeriod < 0) {
+        newHoldPeriod = holdPeriod - Math.abs(newPreparationPeriod);
+      }
+      if (restPeriod > 0 && newHoldPeriod < 0) {
+        newRestPeriod = restPeriod - Math.abs(newHoldPeriod);
+      }
+
+      let newState;
+      if (preparationPeriod !== undefined) {
+        newState = state.setIn(
+          ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'preparationPeriod'],
+          newPreparationPeriod,
+        );
+      }
+      if (newHoldPeriod !== undefined) {
+        newState = newState.setIn(
+          ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'holdPeriod'],
+          newHoldPeriod,
+        );
+      }
+      if (restPeriod !== undefined) {
+        newState = newState.setIn(
+          ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'restPeriod'],
+          newRestPeriod,
+        );
+      }
+      return newState;
     }
 
 

@@ -11,6 +11,7 @@ export const CLEAR_TIMER = 'CLEAR_TIMER';
 export const CREATE_TIMER = 'CREATE_TIMER';
 export const ADD_INTERVAL = 'ADD_INTERVAL';
 export const UPDATE_COUNT = 'UPDATE_COUNT';
+export const UPDATE_TIMER_ON_MOUNT = 'UPDATE_TIMER_ON_MOUNT';
 
 
 export const increaseCurrentSet = exerciseId => ({
@@ -83,4 +84,11 @@ export const addInterval = (exerciseId, interval) => ({
   type: ADD_INTERVAL,
   exerciseId,
   interval,
+});
+
+
+export const updateTimerOnMount = (exerciseId, timeDiffInSec) => ({
+  type: UPDATE_TIMER_ON_MOUNT,
+  exerciseId,
+  timeDiffInSec,
 });
