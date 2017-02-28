@@ -22,6 +22,11 @@ const addLeadingZerosToNumber = (number) => {
  * @param {[type]} props [contains the time remaining in the countdown]
  */
 const CountdownTimer = (props) => {
+  CountdownTimer.propTypes = {
+    remainingTime: React.PropTypes.number.isRequired,
+  };
+
+
   const minUntilNextSet = Math.floor((props.remainingTime % (60 * 60)) / 60);
   const secUntilNextSet = addLeadingZerosToNumber(Math.floor(props.remainingTime % 60));
 
@@ -37,6 +42,4 @@ const CountdownTimer = (props) => {
   );
 };
 
-CountdownTimer.propTypes = {
-  remainingTime: React.PropTypes.number.isRequired,
-};
+export default CountdownTimer;

@@ -3,13 +3,12 @@ import { Button } from 'react-bootstrap';
 
 import {
   // increaseCurrentSet,
-  // reducePreparationPeriod,
-  // reduceHoldPeriod,
-  // reduceRestPeriod,
-  // addInterval,
+  reducePreparationPeriod,
+  reduceHoldPeriod,
+  reduceRestPeriod,
+  addInterval,
   createTimer,
-  updateCount,
-  // clearTimer,
+  clearTimer,
 } from '../actions/actions';
 import CountdownTimer from './CountdownTimer';
 
@@ -39,33 +38,9 @@ const getBackgroundColour = (isInRecovery, isCountingDown) => {
 };
 
 
-/**
- * [getCounterValue description]
- * @param  {Boolean} isInRecovery                [description]
- * @param  {Boolean} isCountingDown              [description]
- * @param  {[type]}  timeBetweenSetsm            [description]
- * @param  {[type]}  timeLengthOfExerciseCounter [description]
- * @return {[type]}                              [description]
- */
-const getCounterValue = (
-  isInRecovery,
-  isCountingDown,
-  timeBetweenSetsm,
-  timeLengthOfExerciseCounter,
-) => {
-  if (isInRecovery) {
-    return timeBetweenSetsm;
-  } else if (isCountingDown) {
-    return timeLengthOfExerciseCounter;
-  }
-  return '';
-};
+class Exercise extends React.Component {
 
-
-const Exercise = (props) => {
-  const { exercise, dispatch, currentWorkout } = props;
-
-  Exercise.propTypes = {
+  static propTypes = {
     currentWorkout: React.PropTypes.number,
     exercise: React.PropTypes.shape({
       get: React.PropTypes.func,
@@ -82,7 +57,7 @@ const Exercise = (props) => {
   };
 
 
-  Exercise.defaultProps = {
+  static defaultProps = {
     currentWorkout: 0,
     exercise: {
       name: '',
@@ -97,58 +72,89 @@ const Exercise = (props) => {
   };
 
 
-  const isInRecovery = exercise.get('isInRecovery');
-  const isCountingDown = exercise.get('isCountingDown');
-
-  const countVal = exercise.get('timer');
-  const timeLengthOfExerciseCounter = exercise.get('timeLengthOfExerciseCounter');
-  const backgroundColor = getBackgroundColour(
-    isInRecovery,
-    isCountingDown,
-  );
-  const counterValue = getCounterValue(
-    isInRecovery,
-    isCountingDown,
-    exercise.get('timeBetweenSets'),
-    timeLengthOfExerciseCounter,
-  );
+  constructor(props) {
+    super(props);
+    this.tick = this.tick.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+  }
 
 
-  // const tick = (exerciseId) => {
-  //   // console.log(props);
-  //   const timer = exercise.get('timer');
-  //   const preparationPeriod = timer.get('preparationPeriod');
-  //   const holdPeriod = timer.get('holdPeriod');
-  //   const restPeriod = timer.get('restPeriod');
-  //
-  //   if (preparationPeriod > 0) {
-  //     dispatch(reducePreparationPeriod(exerciseId));
-  //   } else if (holdPeriod > 0) {
-  //     dispatch(reduceHoldPeriod(exerciseId));
-  //   } else if (restPeriod > 0) {
-  //     dispatch(reduceRestPeriod(exerciseId));
-  //   } else {
-  //     // All counting has finished.
-  //     clearInterval(timer.get('interval'));
-  //     dispatch(clearTimer(exerciseId));
-  //   }
-  // };
+  tick() {
+    // console.log(props);
+    const timer = this.props.exercise.get('timer');
+    const preparationPeriod = timer.get('preparationPeriod');
+    const holdPeriod = timer.get('holdPeriod');
+    const restPeriod = timer.get('restPeriod');
+
+    if (preparationPeriod > 0) {
+      this.props.dispatch(reducePreparationPeriod(this.props.currentWorkout));
+    } else if (holdPeriod > 0) {
+      this.props.dispatch(reduceHoldPeriod(this.props.currentWorkout));
+    } else if (restPeriod > 0) {
+      this.props.dispatch(reduceRestPeriod(this.props.currentWorkout));
+    } else {
+      // All counting has finished.
+      clearInterval(timer.get('interval'));
+      this.props.dispatch(clearTimer(this.props.currentWorkout));
+    }
+  }
 
 
-  const handleClick = (exerciseId) => {
-    dispatch(createTimer(exerciseId));
-    // const interval = setInterval(() => tick(
-    //   exerciseId,
-    // ), 1000);
-    // dispatch(addInterval(exerciseId, interval));
-  };
+  handleClick() {
+    this.props.dispatch(createTimer(this.props.currentWorkout));
+    const interval = setInterval(this.tick, 1000);
+    this.props.dispatch(addInterval(this.props.currentWorkout, interval));
+  }
 
-  const getCountValue = () => {
+
+  render() {
+    const { exercise } = this.props;
+    const isInRecovery = exercise.get('isInRecovery');
+    const isCountingDown = exercise.get('isCountingDown');
     const timer = exercise.get('timer');
-    const timeDiff = timer ? (new Date() - timer.get('preparationPeriod')) / 1000 : '';
-    dispatch(updateCount(currentWorkout, timeDiff));
-    return timeDiff;
-  };
-};
+    const timeLengthOfExerciseCounter = exercise.get('timeLengthOfExerciseCounter');
+    const backgroundColor = getBackgroundColour(
+      isInRecovery,
+      isCountingDown,
+    );
+    const remainingTime =
+      exercise.getIn(['timer', 'preparationPeriod']) ||
+      exercise.getIn(['timer', 'holdPeriod']) ||
+      exercise.getIn(['timer', 'restPeriod']) ||
+      '';
+
+
+    return (<div>
+      <div className="currentExercise" style={{ backgroundColor }}>
+        <div><p className="title"><b className="name">Name: </b>{exercise.get('name')}</p></div>
+        <div><p><b className="sets">Sets:</b> {exercise.get('currSets')}/{exercise.get('sets')}</p></div>
+        <div><p><b className="reps">Reps:</b> {exercise.get('reps')}</p></div>
+        {/* {ex.selectedVariation !== '' && ex.variations.length > 0 &&
+          <p><b>Current Variation:</b> {ex.variations[ex.selectedVariation]}</p>
+        } */}
+        {exercise.get('weight') &&
+          <div><p><b className="weights">weight:</b> {exercise.get('weight')}</p></div>
+        }
+        {exercise.get('timeLengthOfExercise') !== undefined &&
+          <div><p>{exercise.get('timeLengthOfExercise')} sec hold</p></div>
+        }
+        {timer &&
+          <CountdownTimer
+            remainingTime={remainingTime}
+          />
+        }
+        {!timer &&
+          <Button
+            bsSize="large"
+            onClick={this.handleClick}
+          >
+            {timeLengthOfExerciseCounter === undefined && 'Finished Set'}
+            {timeLengthOfExerciseCounter !== undefined && 'Start Timer'}
+          </Button>
+        }
+      </div>
+    </div>);
+  }
+}
 
 export default Exercise;
