@@ -20,17 +20,21 @@ import {
 import defaultState from '../defaultState';
 
 const reducer = (state = defaultState, action) => {
+
   switch (action.type) {
 
     case INCREASE_CURRENT_SET: {
+
       return state.updateIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'currSets'],
         val => val + 1,
       );
+
     }
 
 
     case NEXT_EXERCISE: {
+
       const numExercises = state.getIn(['routines', 'fullBodyWorkout', 'exercises']).size - 1;
 
       let currentWorkout = state.get('currentWorkout');
@@ -38,19 +42,23 @@ const reducer = (state = defaultState, action) => {
       currentWorkout = currentWorkout > numExercises ? numExercises : currentWorkout;
 
       return state.set('currentWorkout', currentWorkout);
+
     }
 
 
     case PREVIOUS_EXERCISE: {
+
       let currentWorkout = state.get('currentWorkout');
       currentWorkout -= 1;
       currentWorkout = currentWorkout < 0 ? 0 : currentWorkout;
 
       return state.set('currentWorkout', currentWorkout);
+
     }
 
 
     case RESET_EXERCISE_TIMER: {
+
       state.setIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timeBetweenSets'], 180,
       );
@@ -60,27 +68,33 @@ const reducer = (state = defaultState, action) => {
       return state.setIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'isInRecovery'], false,
       );
+
     }
 
 
     case START_EXERCISE_TIMER: {
+
       state.setIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'isCountingDown'], true,
       );
       return state.setIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'isInRecovery'], false,
       );
+
     }
 
 
     case INCREASE_EXERCISE_TIMER: {
+
       return state.updateIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer'], val => val - 1,
       );
+
     }
 
 
     case CREATE_TIMER: {
+
       const exercise = state.getIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId],
       );
@@ -95,78 +109,109 @@ const reducer = (state = defaultState, action) => {
           restPeriod: restPeriod || 0,
         }),
       );
+
     }
 
 
     case REDUCE_PREPARATION_PERIOD: {
+
       return state.updateIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'preparationPeriod'],
         (val) => {
+
           if (val > 0) {
+
             return val - 1;
+
           }
+
           return val;
+
         },
       );
+
     }
 
 
     case REDUCE_HOLD_PERIOD: {
+
       return state.updateIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'holdPeriod'],
         (val) => {
+
           if (val > 0) {
+
             return val - 1;
+
           }
+
           return val;
+
         },
       );
+
     }
 
 
     case REDUCE_REST_PERIOD: {
+
       return state.updateIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'restPeriod'],
         (val) => {
+
           if (val > 0) {
+
             return val - 1;
+
           }
+
           return val;
+
         },
       );
+
     }
 
 
     case REMOVE_PREPARATION_PERIOD: {
+
       return state.deleteIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'preparationPeriod'],
       );
+
     }
 
 
     case REMOVE_HOLD_PERIOD: {
+
       return state.deleteIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'holdPeriod'],
       );
+
     }
 
 
     case REMOVE_REST_PERIOD: {
+
       return state.deleteIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'restPeriod'],
       );
+
     }
 
 
     case ADD_INTERVAL: {
+
       return state.setIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'interval'],
         action.interval,
       );
+
     }
 
 
     case UPDATE_TIMER_ON_MOUNT: {
+
       const exercise = state.getIn(
         ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer'],
       );
@@ -178,40 +223,55 @@ const reducer = (state = defaultState, action) => {
       let newRestPeriod = 0;
 
       if (preparationPeriod > 0) {
+
         newPreparationPeriod = preparationPeriod - action.timeDiffInSec;
+
       }
       if (holdPeriod > 0 && newPreparationPeriod < 0) {
+
         newHoldPeriod = holdPeriod - Math.abs(newPreparationPeriod);
+
       }
       if (restPeriod > 0 && newHoldPeriod < 0) {
+
         newRestPeriod = restPeriod - Math.abs(newHoldPeriod);
+
       }
 
       let newState;
       if (preparationPeriod !== undefined) {
+
         newState = state.setIn(
           ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'preparationPeriod'],
           newPreparationPeriod,
         );
+
       }
       if (newHoldPeriod !== undefined) {
+
         newState = newState.setIn(
           ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'holdPeriod'],
           newHoldPeriod,
         );
+
       }
       if (restPeriod !== undefined) {
+
         newState = newState.setIn(
           ['routines', 'fullBodyWorkout', 'exercises', action.exerciseId, 'timer', 'restPeriod'],
           newRestPeriod,
         );
+
       }
       return newState;
+
     }
 
 
     default:
       return state;
   }
+
 };
+
 export default reducer;

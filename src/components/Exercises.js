@@ -4,6 +4,7 @@ import Exercise from './Exercise';
 
 
 const Exercises = ({ data, dispatch }) => {
+
   const currentWorkout = data.get('currentWorkout');
 
   return (<div>
@@ -11,6 +12,7 @@ const Exercises = ({ data, dispatch }) => {
       <h2 className="routineTitle">Current Routine: Full Body Workout</h2>
       <div className="exerciseBreadCrumb">
         {data.getIn(['routines', 'fullBodyWorkout', 'exercises']).entrySeq().forEach((e) => {
+
           const name = e[1].get('name');
           const path = `/exercises/${name}`;
           return (
@@ -23,6 +25,7 @@ const Exercises = ({ data, dispatch }) => {
               }
             </div>
           );
+
         })}
       </div>
     </div>
@@ -32,6 +35,7 @@ const Exercises = ({ data, dispatch }) => {
       dispatch={dispatch}
     />
   </div>);
+
 };
 
 Exercises.propTypes = {

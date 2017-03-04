@@ -7,13 +7,19 @@ import React from 'react';
  * @param {[Integer]} number [The display number]
  */
 const addLeadingZerosToNumber = (number) => {
+
   let returnVal;
   if (number.toString().length === 1) {
+
     returnVal = `0${number}`;
+
   } else {
+
     returnVal = number;
+
   }
   return returnVal;
+
 };
 
 
@@ -22,6 +28,7 @@ const addLeadingZerosToNumber = (number) => {
  * @param {[type]} props [contains the time remaining in the countdown]
  */
 const CountdownTimer = (props) => {
+
   CountdownTimer.propTypes = {
     remainingTime: React.PropTypes.number.isRequired,
   };
@@ -40,6 +47,7 @@ const CountdownTimer = (props) => {
       </p>
     </div>
   );
+
 };
 
 export default CountdownTimer;

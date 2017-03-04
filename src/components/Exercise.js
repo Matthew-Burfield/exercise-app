@@ -12,7 +12,6 @@ import {
   addInterval,
   createTimer,
   clearTimer,
-  updateTimerOnMount,
 } from '../actions/actions';
 import CountdownTimer from './CountdownTimer';
 
@@ -29,16 +28,57 @@ import CountdownTimer from './CountdownTimer';
  *                                  value as a string
  */
 const getBackgroundColour = (isInRecovery, isCountingDown) => {
+
   const bgGreen = '#66BB6A';
   const bgRed = '#EF5350';
   const bgOrange = '#FFA726';
 
   if (isInRecovery) {
+
     return bgRed;
+
   } else if (isCountingDown) {
+
     return bgOrange;
+
   }
   return bgGreen;
+
+};
+
+
+export const counter = function counter(exerciseId) {
+
+  let intervalId;
+
+  return {
+
+    tick: function tick() {
+
+      return console.log(exerciseId);
+
+    },
+
+    createInterval: function createInterval() {
+
+      intervalId = setInterval(this.tick, 1000);
+
+    },
+
+    clearInterval: function clearInterval() {
+
+      clearInterval(intervalId);
+
+    },
+
+    getIntervalId: function getIntervalId() {
+
+      return intervalId;
+
+    },
+
+  };
+
 };
 
 
@@ -69,39 +109,23 @@ class Exercise extends React.Component {
       sets: 0,
       currSets: 0,
       reps: 0,
-      get() {
-        return '';
-      },
+      get: () => {},
     },
     dispatch: () => {},
   };
 
 
   constructor(props) {
+
     super(props);
     this.tick = this.tick.bind(this);
     this.handleClick = this.handleClick.bind(this);
-  }
 
-
-  componentDidUpdate(prevProps) {
-    const { dispatch, currentWorkout, exercise } = this.props;
-    if (prevProps.exercise.get('name') !== exercise.get('name')) {
-      clearInterval(prevProps.exercise.getIn(['timer', 'interval']));
-      // TODO: dispatch(removeInterval(this.props.currentWorkout));
-      //
-      const timer = exercise.get('timer');
-      if (timer) {
-        const dateDiff = (new Date() - timer.get('timerStarted')) / 1000;
-        dispatch(updateTimerOnMount(this.props.currentWorkout, dateDiff));
-        const interval = setInterval(this.tick, 1000);
-        dispatch(addInterval(currentWorkout, interval));
-      }
-    }
   }
 
 
   tick() {
+
     const { dispatch, currentWorkout, exercise } = this.props;
     const timer = exercise.get('timer');
     const preparationPeriod = timer.get('preparationPeriod');
@@ -109,54 +133,88 @@ class Exercise extends React.Component {
     const restPeriod = timer.get('restPeriod');
 
     if (preparationPeriod !== undefined) {
+
       if (preparationPeriod === 0) {
+
         dispatch(removePreparationPeriod(currentWorkout));
+
       } else {
+
         dispatch(reducePreparationPeriod(currentWorkout));
+
       }
+
     } else if (holdPeriod !== undefined) {
+
       if (holdPeriod === 0) {
+
         dispatch(removeHoldPeriod(currentWorkout));
+
       } else {
+
         dispatch(reduceHoldPeriod(currentWorkout));
+
       }
+
     } else if (restPeriod !== undefined) {
+
       if (restPeriod === 0) {
+
         dispatch(removeRestPeriod(currentWorkout));
+
       } else {
+
         dispatch(reduceRestPeriod(currentWorkout));
+
       }
+
     } else {
+
       // All counting has finished.
       clearInterval(timer.get('interval'));
       dispatch(clearTimer(currentWorkout));
+
     }
+
   }
 
 
   handleClick() {
+
     this.props.dispatch(createTimer(this.props.currentWorkout));
     const interval = setInterval(this.tick, 1000);
     this.props.dispatch(addInterval(this.props.currentWorkout, interval));
+
   }
 
 
   render() {
+
     const { exercise } = this.props;
     const timer = exercise.get('timer');
     const backgroundColor = getBackgroundColour();
 
     let remainingTime;
     if (timer) {
+
       if (timer.get('preparationPeriod') !== undefined) {
+
         remainingTime = timer.get('preparationPeriod');
+
       } else if (timer.get('holdPeriod') !== undefined) {
+
         remainingTime = timer.get('holdPeriod');
+
       } else if (timer.get('restPeriod') !== undefined) {
+
         remainingTime = timer.get('restPeriod');
+
       } else {
+
         remainingTime = 0;
+
       }
+
     }
 
 
@@ -189,6 +247,7 @@ class Exercise extends React.Component {
         }
       </div>
     </div>);
+
   }
 }
 
