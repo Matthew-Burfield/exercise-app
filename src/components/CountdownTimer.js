@@ -27,23 +27,22 @@ const addLeadingZerosToNumber = (number) => {
  * Display the countdown timer
  * @param {[type]} props [contains the time remaining in the countdown]
  */
-const CountdownTimer = (props) => {
+const CountdownTimer = ({ value }) => {
 
   CountdownTimer.propTypes = {
-    remainingTime: React.PropTypes.number.isRequired,
+    value: React.PropTypes.number.isRequired,
   };
 
-
-  const minUntilNextSet = Math.floor((props.remainingTime % (60 * 60)) / 60);
-  const secUntilNextSet = addLeadingZerosToNumber(Math.floor(props.remainingTime % 60));
+  const minutes = Math.floor((value % (60 * 60)) / 60);
+  const seconds = Math.floor(value % 60);
 
   return (
     <div className="setCountdownTimer">
       <p className="mobile">
-        {minUntilNextSet} : {secUntilNextSet}
+        {minutes} : {addLeadingZerosToNumber(seconds)}
       </p>
       <p className="desktop">
-        <b>Time in between sets: </b>{minUntilNextSet} min {secUntilNextSet} sec
+        <b>Time in between sets: </b>{minutes} min {seconds} sec
       </p>
     </div>
   );
