@@ -13,7 +13,7 @@ class App extends React.Component {
     this.state = {
       currentWorkout: {
         currentRoutine: 0,
-        currentExercise: undefined,
+        currentExercise: 0,
       },
       routines: [{
         name: 'Full Body Workout',
@@ -123,10 +123,9 @@ class App extends React.Component {
   handlePrevExerciseNavigation() {
 
     const newState = Object.assign({}, this.state);
-    const currentExercise = newState.currentWorkout.currentExercise;
 
     newState.currentWorkout.currentExercise -= 1;
-    if (currentExercise === undefined || currentExercise < 0) {
+    if (newState.currentWorkout.currentExercise < 0) {
       newState.currentWorkout.currentExercise = 0;
     }
 
@@ -138,10 +137,9 @@ class App extends React.Component {
   handleNextExerciseNavigation() {
 
     const newState = Object.assign({}, this.state);
-    const currentExercise = newState.currentWorkout.currentExercise;
 
     newState.currentWorkout.currentExercise += 1;
-    if (currentExercise === undefined || currentExercise < 0) {
+    if (newState.currentWorkout.currentExercise < 0) {
       newState.currentWorkout.currentExercise = 0;
     }
 
@@ -162,7 +160,7 @@ class App extends React.Component {
         }
         {currentRoutine !== undefined &&
           <Routine
-            routine={this.state.routines[0]}
+            routine={this.state.routines[this.state.currentWorkout.currentRoutine]}
             currentExercise={this.state.currentWorkout.currentExercise || 0}
             handleClick={this.handleClick}
           />
