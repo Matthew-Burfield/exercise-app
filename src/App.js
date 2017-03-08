@@ -137,10 +137,12 @@ class App extends React.Component {
   handleNextExerciseNavigation() {
 
     const newState = Object.assign({}, this.state);
+    const currentRoutine = newState.currentWorkout.currentRoutine;
+    const maxExercises = newState.routines[currentRoutine].exercises.length;
 
     newState.currentWorkout.currentExercise += 1;
-    if (newState.currentWorkout.currentExercise < 0) {
-      newState.currentWorkout.currentExercise = 0;
+    if (newState.currentWorkout.currentExercise > maxExercises - 1) {
+      newState.currentWorkout.currentExercise = maxExercises - 1;
     }
 
     this.setState(

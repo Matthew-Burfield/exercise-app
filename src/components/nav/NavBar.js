@@ -22,7 +22,10 @@ export const NavBarTop = () => {
 
 };
 
-export const NavBarBottom = ({ handlePrevExerciseNavigation, handleNextExerciseNavigation }) => {
+export const NavBarBottom = ({
+  handlePrevExerciseNavigation,
+  handleNextExerciseNavigation,
+}) => {
 
   NavBarBottom.propTypes = {
     handlePrevExerciseNavigation: React.PropTypes.func.isRequired,
@@ -35,7 +38,11 @@ export const NavBarBottom = ({ handlePrevExerciseNavigation, handleNextExerciseN
         <NavItem eventKey={1} onClick={handlePrevExerciseNavigation}>Prev</NavItem>
       </Nav>
       <Nav pullRight style={{ float: 'right', marginRight: -15, margin: 0 }}>
-        <NavItem eventKey={1} onClick={handleNextExerciseNavigation}>Next</NavItem>
+        <NavItem
+          eventKey={1}
+          onClick={handleNextExerciseNavigation}
+        >Next
+        </NavItem>
       </Nav>
     </Navbar>
   );
