@@ -1,8 +1,36 @@
 import React from 'react';
+import { ListGroup, ListGroupItem } from 'react-bootstrap';
 
 import { NavBarTop, NavBarBottom } from './components/nav/NavBar';
 import Routine from './components/Routine';
 import './App.scss';
+
+
+const ListOfRoutines = ({ state }) => {
+  ListOfRoutines.propTypes = {
+    state: React.PropTypes.shape({
+      routines: React.PropTypes.shape({
+      }).isRequired,
+    }).isRequired,
+  };
+
+  const handleRoutineSelection = (e) => {
+    console.log(e.target.innerText);
+  };
+
+  return (
+    <ListGroup>
+      {state.routines.map((routine) => {
+        return (
+          <ListGroupItem
+            key={routine.name}
+            onClick={handleRoutineSelection}
+          >{routine.name}
+          </ListGroupItem>);
+      })}
+    </ListGroup>
+  );
+};
 
 
 class App extends React.Component {
@@ -12,8 +40,8 @@ class App extends React.Component {
     super(props);
     this.state = {
       currentWorkout: {
-        currentRoutine: 0,
-        currentExercise: 0,
+        currentRoutine: undefined,
+        currentExercise: undefined,
       },
       routines: [{
         name: 'Full Body Workout',
@@ -158,7 +186,7 @@ class App extends React.Component {
       <div className="App">
         <NavBarTop />
         {currentRoutine === undefined &&
-          <div>List of Routines</div>
+          <ListOfRoutines state={this.state} />
         }
         {currentRoutine !== undefined &&
           <Routine
