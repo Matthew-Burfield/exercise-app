@@ -6,17 +6,17 @@ import Routine from './components/Routine';
 import './App.scss';
 
 
-const ListOfRoutines = ({ state }) => {
+const ListOfRoutines = ({ state, handleRoutineSelection }) => {
+
+
   ListOfRoutines.propTypes = {
     state: React.PropTypes.shape({
       routines: React.PropTypes.shape({
       }).isRequired,
     }).isRequired,
+    handleRoutineSelection: React.PropTypes.func.isRequired,
   };
 
-  const handleRoutineSelection = (e) => {
-    console.log(e.target.innerText);
-  };
 
   return (
     <ListGroup>
@@ -69,6 +69,7 @@ class App extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.handlePrevExerciseNavigation = this.handlePrevExerciseNavigation.bind(this);
     this.handleNextExerciseNavigation = this.handleNextExerciseNavigation.bind(this);
+    this.handleRoutineSelection = this.handleRoutineSelection.bind(this);
   }
 
   tick(currentExercise) {
@@ -87,26 +88,18 @@ class App extends React.Component {
       );
 
     } else {
-
       if (currCounter.prepTimeVal > 0) {
-
         currCounter.prepTimeVal -= 1;
-
       } else if (currCounter.holdTimeVal > 0) {
-
         currCounter.holdTimeVal -= 1;
-
       } else if (currCounter.restTimeVal > 0) {
-
         currCounter.restTimeVal -= 1;
-
       }
+
       this.setState(
         newState,
       );
-
     }
-
   }
 
   handleClick(currentExercise) {
@@ -120,32 +113,42 @@ class App extends React.Component {
 
       currCounter.interval = interval;
       if (!Object.prototype.hasOwnProperty.call(currExercise, 'numSets')) {
-
         currExercise.numSets = 0;
-
       }
       currExercise.numSets += 1;
+
       if (Object.prototype.hasOwnProperty.call(currCounter, 'prepTime')) {
-
         currCounter.prepTimeVal = currCounter.prepTime;
-
       }
+
       if (Object.prototype.hasOwnProperty.call(currCounter, 'holdTime')) {
-
         currCounter.holdTimeVal = currCounter.holdTime;
-
       }
+
       if (Object.prototype.hasOwnProperty.call(currCounter, 'restTime')) {
-
         currCounter.restTimeVal = currCounter.restTime;
-
       }
+
       this.setState(
         newState,
       );
-
     }
+  }
 
+  handleRoutineSelection(e) {
+    const newState = Object.assign({}, this.state);
+    const index = this.state.routines.findIndex((item) => {
+      return (item.name === e.target.innerText);
+    });
+
+    newState.currentWorkout = {
+      currentRoutine: index,
+      currentExercise: 0,
+    };
+
+    this.setState(
+      newState,
+    );
   }
 
   handlePrevExerciseNavigation() {
@@ -186,7 +189,7 @@ class App extends React.Component {
       <div className="App">
         <NavBarTop />
         {currentRoutine === undefined &&
-          <ListOfRoutines state={this.state} />
+          <ListOfRoutines state={this.state} handleRoutineSelection={this.handleRoutineSelection} />
         }
         {currentRoutine !== undefined &&
           <Routine
