@@ -1,36 +1,9 @@
 import React from 'react';
-import { ListGroup, ListGroupItem } from 'react-bootstrap';
 
 import { NavBarTop, NavBarBottom } from './components/nav/NavBar';
 import Routine from './components/Routine';
+import ListOfRoutines from './components/ListOfRoutines';
 import './App.scss';
-
-
-const ListOfRoutines = ({ state, handleRoutineSelection }) => {
-
-
-  ListOfRoutines.propTypes = {
-    state: React.PropTypes.shape({
-      routines: React.PropTypes.shape({
-      }).isRequired,
-    }).isRequired,
-    handleRoutineSelection: React.PropTypes.func.isRequired,
-  };
-
-
-  return (
-    <ListGroup>
-      {state.routines.map((routine) => {
-        return (
-          <ListGroupItem
-            key={routine.name}
-            onClick={handleRoutineSelection}
-          >{routine.name}
-          </ListGroupItem>);
-      })}
-    </ListGroup>
-  );
-};
 
 
 class App extends React.Component {
