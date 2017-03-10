@@ -36,6 +36,12 @@ class App extends React.Component {
             restTime: 60,
           },
         }],
+      }, {
+        name: 'Second Routine',
+        exercises: [],
+      }, {
+        name: 'Third Routine',
+        exercises: [],
       }],
     };
     this.tick = this.tick.bind(this);
