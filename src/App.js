@@ -177,10 +177,12 @@ class App extends React.Component {
             handleClick={this.handleClick}
           />
         }
-        <NavBarBottom
-          handlePrevExerciseNavigation={this.handlePrevExerciseNavigation}
-          handleNextExerciseNavigation={this.handleNextExerciseNavigation}
-        />
+        {currentRoutine !== undefined &&
+          <NavBarBottom
+            handlePrevExerciseNavigation={this.handlePrevExerciseNavigation}
+            handleNextExerciseNavigation={this.handleNextExerciseNavigation}
+          />
+        }
       </div>
     );
 
