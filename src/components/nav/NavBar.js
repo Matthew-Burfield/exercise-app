@@ -1,7 +1,22 @@
 import React from 'react';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 
-export const NavBarTop = () => {
+export const NavBarTop = ({
+  currentRoutine,
+  isEditMode,
+  handleCancelWorkout,
+  handleSwitchEditMode }) => {
+
+  NavBarTop.propTypes = {
+    currentRoutine: React.PropTypes.number,
+    isEditMode: React.PropTypes.bool.isRequired,
+    handleCancelWorkout: React.PropTypes.func.isRequired,
+    handleSwitchEditMode: React.PropTypes.func.isRequired,
+  };
+
+  NavBarTop.defaultProps = {
+    currentRoutine: undefined,
+  };
 
   return (
     <Navbar collapseOnSelect>
@@ -13,8 +28,14 @@ export const NavBarTop = () => {
       </Navbar.Header>
       <Navbar.Collapse>
         <Nav>
-          <NavItem eventKey={1} href="/">Profile</NavItem>
-          <NavItem eventKey={2} href="/">Logout</NavItem>
+          {
+            currentRoutine !== undefined &&
+            <NavItem eventKey={1} onClick={handleCancelWorkout}>Cancel Workout</NavItem>
+          }
+          <NavItem eventKey={1} onClick={handleSwitchEditMode}>
+            {isEditMode && 'Finish Editing'}
+            {!isEditMode && 'Edit Routines'}
+          </NavItem>
         </Nav>
       </Navbar.Collapse>
     </Navbar>

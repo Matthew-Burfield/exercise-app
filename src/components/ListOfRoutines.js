@@ -2,14 +2,13 @@ import React from 'react';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 
 
-const ListOfRoutines = ({ state, handleRoutineSelection }) => {
+const ListOfRoutines = ({ routines, handleRoutineSelection }) => {
 
 
   ListOfRoutines.propTypes = {
-    state: React.PropTypes.shape({
-      routines: React.PropTypes.shape({
-      }).isRequired,
-    }).isRequired,
+    routines: React.PropTypes.arrayOf(
+      React.PropTypes.shape({}),
+    ).isRequired,
     handleRoutineSelection: React.PropTypes.func.isRequired,
   };
 
@@ -17,7 +16,7 @@ const ListOfRoutines = ({ state, handleRoutineSelection }) => {
   return (
     <ListGroup>
       <h1>List of Routines</h1>
-      {state.routines.map((routine) => {
+      {routines.map((routine) => {
         return (
           <ListGroupItem
             key={routine.name}

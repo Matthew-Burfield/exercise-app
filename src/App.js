@@ -12,6 +12,7 @@ class App extends React.Component {
 
     super(props);
     this.state = {
+      editMode: false,
       currentWorkout: {
         currentRoutine: undefined,
         currentExercise: undefined,
@@ -49,6 +50,8 @@ class App extends React.Component {
     this.handlePrevExerciseNavigation = this.handlePrevExerciseNavigation.bind(this);
     this.handleNextExerciseNavigation = this.handleNextExerciseNavigation.bind(this);
     this.handleRoutineSelection = this.handleRoutineSelection.bind(this);
+    this.handleCancelWorkout = this.handleCancelWorkout.bind(this);
+    this.handleSwitchEditMode = this.handleSwitchEditMode.bind(this);
   }
 
   tick(currentExercise) {
@@ -160,28 +163,46 @@ class App extends React.Component {
     );
   }
 
-  render() {
+  handleCancelWorkout() {
+    this.setState({
+      currentWorkout: {
+        currentRoutine: undefined,
+        currentExercise: undefined,
+      },
+    });
+  }
 
-    const currentRoutine = this.state.currentWorkout.currentRoutine;
+  handleSwitchEditMode() {
+    this.setState((prevState) => {
+      return { editMode: !prevState.editMode };
+    });
+  }
+
+  render() {
 
     return (
       <div className="App">
-        <NavBarTop />
-        {currentRoutine === undefined &&
-          <ListOfRoutines state={this.state} handleRoutineSelection={this.handleRoutineSelection} />
-        }
-        {currentRoutine !== undefined &&
-          <Routine
-            routine={this.state.routines[this.state.currentWorkout.currentRoutine]}
-            currentExercise={this.state.currentWorkout.currentExercise || 0}
+        <NavBarTop
+          currentRoutine={this.currentRoutine}
+          isEditMode={this.state.editMode}
+          handleCancelWorkout={this.handleCancelWorkout}
+          handleSwitchEditMode={this.handleSwitchEditMode}
+        />
+        {
+          !this.state.editMode &&
+          <ViewMode
+            currentRoutine={this.state.currentWorkout.currentRoutine}
+            currentExercise={this.state.currentWorkout.currentExercise}
+            routines={this.state.routines}
+            handleRoutineSelection={this.handleRoutineSelection}
             handleClick={this.handleClick}
-          />
-        }
-        {currentRoutine !== undefined &&
-          <NavBarBottom
             handlePrevExerciseNavigation={this.handlePrevExerciseNavigation}
             handleNextExerciseNavigation={this.handleNextExerciseNavigation}
           />
+        }
+        {
+          this.state.editMode &&
+          <h1>Edit Mode</h1>
         }
       </div>
     );
@@ -189,5 +210,50 @@ class App extends React.Component {
   }
 
 }
+
+const ViewMode = (props) => {
+
+  ViewMode.propTypes = {
+    currentRoutine: React.PropTypes.number,
+    currentExercise: React.PropTypes.number,
+    routines: React.PropTypes.arrayOf(
+      React.PropTypes.shape({}),
+    ).isRequired,
+    handleRoutineSelection: React.PropTypes.func.isRequired,
+    handleClick: React.PropTypes.func.isRequired,
+    handlePrevExerciseNavigation: React.PropTypes.func.isRequired,
+    handleNextExerciseNavigation: React.PropTypes.func.isRequired,
+  };
+
+  ViewMode.defaultProps = {
+    currentRoutine: undefined,
+    currentExercise: 0,
+  };
+
+  return (
+    <div>
+      {
+        props.currentRoutine === undefined &&
+        <ListOfRoutines
+          routines={props.routines}
+          handleRoutineSelection={props.handleRoutineSelection}
+        />
+      }
+      {props.currentRoutine !== undefined &&
+        <Routine
+          routine={props.routines[props.currentRoutine]}
+          currentExercise={props.currentExercise}
+          handleClick={props.handleClick}
+        />
+      }
+      {props.currentRoutine !== undefined &&
+        <NavBarBottom
+          handlePrevExerciseNavigation={props.handlePrevExerciseNavigation}
+          handleNextExerciseNavigation={props.handleNextExerciseNavigation}
+        />
+      }
+    </div>
+  );
+};
 
 export default App;
