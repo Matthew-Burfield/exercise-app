@@ -2,7 +2,7 @@ import React from 'react';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 
 
-const ListOfRoutines = ({ routines, handleRoutineSelection }) => {
+const ListOfRoutines = ({ routines, handleRoutineSelection, customStyle }) => {
 
 
   ListOfRoutines.propTypes = {
@@ -10,8 +10,12 @@ const ListOfRoutines = ({ routines, handleRoutineSelection }) => {
       React.PropTypes.shape({}),
     ).isRequired,
     handleRoutineSelection: React.PropTypes.func.isRequired,
+    customStyle: React.PropTypes.shape({}),
   };
 
+  ListOfRoutines.defaultProps = {
+    customStyle: undefined,
+  };
 
   return (
     <ListGroup>
@@ -21,6 +25,7 @@ const ListOfRoutines = ({ routines, handleRoutineSelection }) => {
           <ListGroupItem
             key={routine.name}
             onClick={handleRoutineSelection}
+            style={customStyle}
           >{routine.name}
           </ListGroupItem>);
       })}

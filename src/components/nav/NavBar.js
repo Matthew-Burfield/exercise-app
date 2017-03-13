@@ -29,7 +29,7 @@ export const NavBarTop = ({
       <Navbar.Collapse>
         <Nav>
           {
-            currentRoutine !== undefined &&
+            currentRoutine !== undefined && !isEditMode &&
             <NavItem eventKey={1} onClick={handleCancelWorkout}>Cancel Workout</NavItem>
           }
           <NavItem eventKey={1} onClick={handleSwitchEditMode}>

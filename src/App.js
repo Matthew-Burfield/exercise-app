@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { NavBarTop, NavBarBottom } from './components/nav/NavBar';
-import Routine from './components/Routine';
-import ListOfRoutines from './components/ListOfRoutines';
+import { NavBarTop } from './components/nav/NavBar';
+import ViewMode from './components/ViewMode';
+import EditMode from './components/EditMode';
 import './App.scss';
 
 
@@ -52,6 +52,7 @@ class App extends React.Component {
     this.handleRoutineSelection = this.handleRoutineSelection.bind(this);
     this.handleCancelWorkout = this.handleCancelWorkout.bind(this);
     this.handleSwitchEditMode = this.handleSwitchEditMode.bind(this);
+    this.selectExercise = this.selectExercise.bind(this);
   }
 
   tick(currentExercise) {
@@ -125,12 +126,35 @@ class App extends React.Component {
 
     newState.currentWorkout = {
       currentRoutine: index,
-      currentExercise: 0,
     };
 
     this.setState(
       newState,
     );
+  }
+
+  selectExercise(exerciseIndex) {
+    let currentIndex = exerciseIndex;
+    if (this.state.currentWorkout.currentRoutine === undefined) {
+      return;
+    }
+
+    const currRoutineLength = this.state.routines[this.state.currentWorkout.currentRoutine].length;
+    if (currentIndex < 0) {
+      currentIndex = 0;
+    }
+    if (currentIndex > currRoutineLength) {
+      currentIndex = currRoutineLength;
+    }
+
+    this.setState((prevState) => {
+      return {
+        currentWorkout: {
+          currentRoutine: prevState.currentWorkout.currentRoutine,
+          currentExercise: currentIndex,
+        },
+      };
+    });
   }
 
   handlePrevExerciseNavigation() {
@@ -174,7 +198,13 @@ class App extends React.Component {
 
   handleSwitchEditMode() {
     this.setState((prevState) => {
-      return { editMode: !prevState.editMode };
+      return {
+        editMode: !prevState.editMode,
+        currentWorkout: {
+          currentRoutine: undefined,
+          currentExercise: undefined,
+        },
+      };
     });
   }
 
@@ -183,7 +213,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <NavBarTop
-          currentRoutine={this.currentRoutine}
+          currentRoutine={this.state.currentWorkout.currentRoutine}
           isEditMode={this.state.editMode}
           handleCancelWorkout={this.handleCancelWorkout}
           handleSwitchEditMode={this.handleSwitchEditMode}
@@ -202,7 +232,13 @@ class App extends React.Component {
         }
         {
           this.state.editMode &&
-          <h1>Edit Mode</h1>
+          <EditMode
+            currentRoutine={this.state.currentWorkout.currentRoutine}
+            currentExercise={this.state.currentWorkout.currentExercise}
+            routines={this.state.routines}
+            handleRoutineSelection={this.handleRoutineSelection}
+            selectExercise={this.selectExercise}
+          />
         }
       </div>
     );
@@ -210,50 +246,5 @@ class App extends React.Component {
   }
 
 }
-
-const ViewMode = (props) => {
-
-  ViewMode.propTypes = {
-    currentRoutine: React.PropTypes.number,
-    currentExercise: React.PropTypes.number,
-    routines: React.PropTypes.arrayOf(
-      React.PropTypes.shape({}),
-    ).isRequired,
-    handleRoutineSelection: React.PropTypes.func.isRequired,
-    handleClick: React.PropTypes.func.isRequired,
-    handlePrevExerciseNavigation: React.PropTypes.func.isRequired,
-    handleNextExerciseNavigation: React.PropTypes.func.isRequired,
-  };
-
-  ViewMode.defaultProps = {
-    currentRoutine: undefined,
-    currentExercise: 0,
-  };
-
-  return (
-    <div>
-      {
-        props.currentRoutine === undefined &&
-        <ListOfRoutines
-          routines={props.routines}
-          handleRoutineSelection={props.handleRoutineSelection}
-        />
-      }
-      {props.currentRoutine !== undefined &&
-        <Routine
-          routine={props.routines[props.currentRoutine]}
-          currentExercise={props.currentExercise}
-          handleClick={props.handleClick}
-        />
-      }
-      {props.currentRoutine !== undefined &&
-        <NavBarBottom
-          handlePrevExerciseNavigation={props.handlePrevExerciseNavigation}
-          handleNextExerciseNavigation={props.handleNextExerciseNavigation}
-        />
-      }
-    </div>
-  );
-};
 
 export default App;
