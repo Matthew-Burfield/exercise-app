@@ -12,6 +12,7 @@ const EditMode = (props) => {
       React.PropTypes.shape({}),
     ).isRequired,
     handleRoutineSelection: React.PropTypes.func.isRequired,
+    handleOnChange: React.PropTypes.func.isRequired,
     selectExercise: React.PropTypes.func.isRequired,
   };
 
@@ -34,8 +35,9 @@ const EditMode = (props) => {
         props.currentRoutine !== undefined &&
         <EditRoutine
           routine={props.routines[props.currentRoutine]}
+          currentRoutine={props.currentRoutine}
           currentExercise={props.currentExercise}
-          handleSaveExercise={() => { return console.log('here'); }}
+          handleOnChange={props.handleOnChange}
           selectExercise={props.selectExercise}
         />
       }

@@ -53,6 +53,7 @@ class App extends React.Component {
     this.handleCancelWorkout = this.handleCancelWorkout.bind(this);
     this.handleSwitchEditMode = this.handleSwitchEditMode.bind(this);
     this.selectExercise = this.selectExercise.bind(this);
+    this.handleOnChange = this.handleOnChange.bind(this);
   }
 
   tick(currentExercise) {
@@ -83,6 +84,18 @@ class App extends React.Component {
         newState,
       );
     }
+  }
+
+  handleOnChange(currentRoutine, currentExercise, key, e) {
+    const newState = Object.assign({}, this.state);
+    if (key === 'prepTime' || key === 'holdTime' || key === 'restTime') {
+      newState.routines[currentRoutine].exercises[currentExercise].timer[key] = e.target.value;
+    } else {
+      newState.routines[currentRoutine].exercises[currentExercise][key] = e.target.value;
+    }
+    this.setState({
+      newState,
+    });
   }
 
   handleClick(currentExercise) {
@@ -237,6 +250,7 @@ class App extends React.Component {
             currentExercise={this.state.currentWorkout.currentExercise}
             routines={this.state.routines}
             handleRoutineSelection={this.handleRoutineSelection}
+            handleOnChange={this.handleOnChange}
             selectExercise={this.selectExercise}
           />
         }

@@ -4,16 +4,28 @@ import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import EditExercise from './EditExercise';
 
 
-const EditRoutine = ({ routine, currentExercise, selectExercise }) => {
+const EditRoutine = ({
+  routine,
+  currentRoutine,
+  currentExercise,
+  selectExercise,
+  handleOnChange,
+}) => {
 
   EditRoutine.propTypes = {
     routine: React.PropTypes.shape({}).isRequired,
+    currentRoutine: React.PropTypes.number.isRequired,
     currentExercise: React.PropTypes.number,
+    handleOnChange: React.PropTypes.func.isRequired,
     selectExercise: React.PropTypes.func.isRequired,
   };
 
   EditRoutine.defaultProps = {
     currentExercise: undefined,
+  };
+
+  const addExercise = () => {
+    return null;
   };
 
   const render = () => {
@@ -26,11 +38,14 @@ const EditRoutine = ({ routine, currentExercise, selectExercise }) => {
               <ListGroupItem
                 key={exercise.name}
                 onClick={() => selectExercise(index)}
+                style={{ fontStyle: 'italic' }}
               >{exercise.name}
               </ListGroupItem>);
           })}
           <ListGroupItem
             key={'addNew'}
+            onClick={addExercise}
+            style={{ fontStyle: 'italic' }}
           >Add new exercise
           </ListGroupItem>
         </ListGroup>
@@ -39,8 +54,10 @@ const EditRoutine = ({ routine, currentExercise, selectExercise }) => {
 
     return (
       <EditExercise
+        currentRoutine={currentRoutine}
+        currentExercise={currentExercise}
         exercise={routine.exercises[currentExercise]}
-        handleSaveExercise={() => { return console.log('here'); }}
+        handleOnChange={handleOnChange}
       />
     );
   };
