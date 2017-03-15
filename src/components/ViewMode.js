@@ -14,8 +14,7 @@ const ViewMode = (props) => {
     ).isRequired,
     handleRoutineSelection: React.PropTypes.func.isRequired,
     handleClick: React.PropTypes.func.isRequired,
-    handlePrevExerciseNavigation: React.PropTypes.func.isRequired,
-    handleNextExerciseNavigation: React.PropTypes.func.isRequired,
+    handleExerciseNavigation: React.PropTypes.func.isRequired,
   };
 
   ViewMode.defaultProps = {
@@ -41,8 +40,8 @@ const ViewMode = (props) => {
       }
       {props.currentRoutine !== undefined &&
         <NavBarBottom
-          handlePrevExerciseNavigation={props.handlePrevExerciseNavigation}
-          handleNextExerciseNavigation={props.handleNextExerciseNavigation}
+          currentExercise={props.currentExercise}
+          handleExerciseNavigation={props.handleExerciseNavigation}
         />
       }
     </div>

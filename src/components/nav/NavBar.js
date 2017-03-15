@@ -44,24 +44,29 @@ export const NavBarTop = ({
 };
 
 export const NavBarBottom = ({
-  handlePrevExerciseNavigation,
-  handleNextExerciseNavigation,
+  currentExercise,
+  handleExerciseNavigation,
 }) => {
 
   NavBarBottom.propTypes = {
-    handlePrevExerciseNavigation: React.PropTypes.func.isRequired,
-    handleNextExerciseNavigation: React.PropTypes.func.isRequired,
+    currentExercise: React.PropTypes.number.isRequired,
+    handleExerciseNavigation: React.PropTypes.func.isRequired,
   };
 
   return (
     <Navbar fixedBottom>
       <Nav style={{ float: 'left', margin: 0 }}>
-        <NavItem eventKey={1} onClick={handlePrevExerciseNavigation}>Prev</NavItem>
+        <NavItem
+          eventKey={1}
+          onClick={() => handleExerciseNavigation(currentExercise - 1)}
+        >
+          Prev
+        </NavItem>
       </Nav>
       <Nav pullRight style={{ float: 'right', marginRight: -15, margin: 0 }}>
         <NavItem
           eventKey={1}
-          onClick={handleNextExerciseNavigation}
+          onClick={() => handleExerciseNavigation(currentExercise + 1)}
         >Next
         </NavItem>
       </Nav>

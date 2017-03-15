@@ -47,8 +47,6 @@ class App extends React.Component {
     };
     this.tick = this.tick.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.handlePrevExerciseNavigation = this.handlePrevExerciseNavigation.bind(this);
-    this.handleNextExerciseNavigation = this.handleNextExerciseNavigation.bind(this);
     this.handleRoutineSelection = this.handleRoutineSelection.bind(this);
     this.handleCancelWorkout = this.handleCancelWorkout.bind(this);
     this.handleSwitchEditMode = this.handleSwitchEditMode.bind(this);
@@ -86,12 +84,18 @@ class App extends React.Component {
     }
   }
 
-  handleOnChange(currentRoutine, currentExercise, key, e) {
+  handleOnChange(key, e) {
     const newState = Object.assign({}, this.state);
+    const currentRoutine = newState.currentWorkout.currentRoutine;
+    const currentExercise = newState.currentWorkout.currentExercise;
+    let value = e.target.value;
+    if (key !== 'name') {
+      value = Number(value);
+    }
     if (key === 'prepTime' || key === 'holdTime' || key === 'restTime') {
-      newState.routines[currentRoutine].exercises[currentExercise].timer[key] = e.target.value;
+      newState.routines[currentRoutine].exercises[currentExercise].timer[key] = value;
     } else {
-      newState.routines[currentRoutine].exercises[currentExercise][key] = e.target.value;
+      newState.routines[currentRoutine].exercises[currentExercise][key] = value;
     }
     this.setState({
       newState,
@@ -139,6 +143,7 @@ class App extends React.Component {
 
     newState.currentWorkout = {
       currentRoutine: index,
+      currentExercise: 0,
     };
 
     this.setState(
@@ -152,12 +157,13 @@ class App extends React.Component {
       return;
     }
 
-    const currRoutineLength = this.state.routines[this.state.currentWorkout.currentRoutine].length;
+    const routineNumberOfExercises =
+      this.state.routines[this.state.currentWorkout.currentRoutine].exercises.length - 1;
     if (currentIndex < 0) {
       currentIndex = 0;
     }
-    if (currentIndex > currRoutineLength) {
-      currentIndex = currRoutineLength;
+    if (currentIndex > routineNumberOfExercises) {
+      currentIndex = routineNumberOfExercises;
     }
 
     this.setState((prevState) => {
@@ -168,36 +174,6 @@ class App extends React.Component {
         },
       };
     });
-  }
-
-  handlePrevExerciseNavigation() {
-
-    const newState = Object.assign({}, this.state);
-
-    newState.currentWorkout.currentExercise -= 1;
-    if (newState.currentWorkout.currentExercise < 0) {
-      newState.currentWorkout.currentExercise = 0;
-    }
-
-    this.setState(
-      newState,
-    );
-  }
-
-  handleNextExerciseNavigation() {
-
-    const newState = Object.assign({}, this.state);
-    const currentRoutine = newState.currentWorkout.currentRoutine;
-    const maxExercises = newState.routines[currentRoutine].exercises.length;
-
-    newState.currentWorkout.currentExercise += 1;
-    if (newState.currentWorkout.currentExercise > maxExercises - 1) {
-      newState.currentWorkout.currentExercise = maxExercises - 1;
-    }
-
-    this.setState(
-      newState,
-    );
   }
 
   handleCancelWorkout() {
@@ -239,8 +215,7 @@ class App extends React.Component {
             routines={this.state.routines}
             handleRoutineSelection={this.handleRoutineSelection}
             handleClick={this.handleClick}
-            handlePrevExerciseNavigation={this.handlePrevExerciseNavigation}
-            handleNextExerciseNavigation={this.handleNextExerciseNavigation}
+            handleExerciseNavigation={this.selectExercise}
           />
         }
         {

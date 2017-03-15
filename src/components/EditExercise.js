@@ -35,15 +35,11 @@ const FieldGroup = ({ id, label, value, help, ...props }) => {
 const EditExercise = (props) => {
 
   EditExercise.propTypes = {
-    currentRoutine: React.PropTypes.number.isRequired,
-    currentExercise: React.PropTypes.number.isRequired,
     exercise: React.PropTypes.shape({}).isRequired,
     handleOnChange: React.PropTypes.func.isRequired,
   };
 
   const {
-    currentRoutine,
-    currentExercise,
     exercise,
     handleOnChange,
   } = props;
@@ -55,49 +51,57 @@ const EditExercise = (props) => {
         label="Name"
         type="text"
         value={exercise.name}
-        onChange={e => handleOnChange(currentRoutine, currentExercise, 'name', e)}
+        onChange={e => handleOnChange('name', e)}
       />
       <FieldGroup
         id="formControlsText"
         label="Sets"
         type="text"
-        value={exercise.sets}
-        onChange={e => handleOnChange(currentRoutine, currentExercise, 'sets', e)}
+        value={exercise.sets.toString()}
+        onChange={e => handleOnChange('sets', e)}
       />
-      <FieldGroup
-        id="formControlsText"
-        label="Reps"
-        type="text"
-        value={exercise.reps}
-        onChange={e => handleOnChange(currentRoutine, currentExercise, 'reps', e)}
-      />
-      <FieldGroup
-        id="formControlsText"
-        label="Weight"
-        type="text"
-        value={exercise.weight}
-        onChange={e => handleOnChange(currentRoutine, currentExercise, 'weight', e)}
-      />
-      <FieldGroup
-        id="formControlsText"
-        label="Prep Time (seconds)"
-        type="text"
-        value={exercise.timer.prepTime}
-        onChange={e => handleOnChange(currentRoutine, currentExercise, 'prepTime', e)}
-      />
-      <FieldGroup
-        id="formControlsText"
-        label="Hold Time (seconds)"
-        type="text"
-        value={exercise.timer.holdTime}
-        onChange={e => handleOnChange(currentRoutine, currentExercise, 'holdTime', e)}
-      />
+      {exercise.reps &&
+        <FieldGroup
+          id="formControlsText"
+          label="Reps"
+          type="text"
+          value={exercise.reps.toString()}
+          onChange={e => handleOnChange('reps', e)}
+        />
+      }
+      {exercise.weight &&
+        <FieldGroup
+          id="formControlsText"
+          label="Weight"
+          type="text"
+          value={exercise.weight.toString()}
+          onChange={e => handleOnChange('weight', e)}
+        />
+      }
+      {exercise.timer.prepTime &&
+        <FieldGroup
+          id="formControlsText"
+          label="Prep Time (seconds)"
+          type="text"
+          value={exercise.timer.prepTime.toString()}
+          onChange={e => handleOnChange('prepTime', e)}
+        />
+      }
+      {exercise.timer.holdTime &&
+        <FieldGroup
+          id="formControlsText"
+          label="Hold Time (seconds)"
+          type="text"
+          value={exercise.timer.holdTime.toString()}
+          onChange={e => handleOnChange('holdTime', e)}
+        />
+      }
       <FieldGroup
         id="formControlsText"
         label="Rest Time (seconds)"
         type="text"
-        value={exercise.timer.restTime}
-        onChange={e => handleOnChange(currentRoutine, currentExercise, 'restTime', e)}
+        value={exercise.timer.restTime.toString()}
+        onChange={e => handleOnChange('restTime', e)}
       />
     </Form>
   );

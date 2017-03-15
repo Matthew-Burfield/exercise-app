@@ -35,7 +35,6 @@ const EditMode = (props) => {
         props.currentRoutine !== undefined &&
         <EditRoutine
           routine={props.routines[props.currentRoutine]}
-          currentRoutine={props.currentRoutine}
           currentExercise={props.currentExercise}
           handleOnChange={props.handleOnChange}
           selectExercise={props.selectExercise}

@@ -6,7 +6,6 @@ import EditExercise from './EditExercise';
 
 const EditRoutine = ({
   routine,
-  currentRoutine,
   currentExercise,
   selectExercise,
   handleOnChange,
@@ -54,8 +53,6 @@ const EditRoutine = ({
 
     return (
       <EditExercise
-        currentRoutine={currentRoutine}
-        currentExercise={currentExercise}
         exercise={routine.exercises[currentExercise]}
         handleOnChange={handleOnChange}
       />

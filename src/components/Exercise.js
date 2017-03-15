@@ -145,7 +145,7 @@ const Exercise = ({ exercise, currentExercise, handleClick }) => {
       reps: React.PropTypes.number,
       weight: React.PropTypes.number,
       timer: React.PropTypes.shape({}),
-    }),
+    }).isRequired,
     currentExercise: React.PropTypes.number.isRequired,
     handleClick: React.PropTypes.func.isRequired,
   };
