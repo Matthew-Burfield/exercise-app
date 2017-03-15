@@ -33,8 +33,8 @@ class App extends React.Component {
           reps: 1,
           timer: {
             prepTime: 5,
-            holdTime: 30,
-            restTime: 60,
+            holdTime: 60,
+            restTime: 2,
           },
         }],
       }, {
@@ -45,6 +45,14 @@ class App extends React.Component {
         exercises: [],
       }],
     };
+
+    this.ten = new Audio('audio/ten-to-zero-countdown.mp3');
+    this.five = new Audio('audio/five-to-zero-countdown.mp3');
+    this.tenSeconds = new Audio('audio/10-seconds.mp3');
+    this.twentySeconds = new Audio('audio/20-seconds.mp3');
+    this.thirtySeconds = new Audio('audio/30-seconds.mp3');
+    this.fourtySeconds = new Audio('audio/40-seconds.mp3');
+
     this.tick = this.tick.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleRoutineSelection = this.handleRoutineSelection.bind(this);
@@ -70,6 +78,20 @@ class App extends React.Component {
       );
 
     } else {
+      const timeElapsed = currCounter.holdTime - currCounter.holdTimeVal;
+      if (timeElapsed === 10 && currCounter.holdTimeVal !== 10) {
+        this.tenSeconds.play();
+      } else if (timeElapsed === 20 && currCounter.holdTimeVal !== 10) {
+        this.twentySeconds.play();
+      } else if (timeElapsed === 30 && currCounter.holdTimeVal !== 10) {
+        this.thirtySeconds.play();
+      } else if (timeElapsed === 40 && currCounter.holdTimeVal !== 10) {
+        this.fourtySeconds.play();
+      }
+      if (currCounter.holdTimeVal === 10) {
+        this.ten.play();
+      }
+
       if (currCounter.prepTimeVal > 0) {
         currCounter.prepTimeVal -= 1;
       } else if (currCounter.holdTimeVal > 0) {
@@ -119,6 +141,9 @@ class App extends React.Component {
 
       if (Object.prototype.hasOwnProperty.call(currCounter, 'prepTime')) {
         currCounter.prepTimeVal = currCounter.prepTime;
+        if (currCounter.prepTimeVal === 5) {
+          this.five.play();
+        }
       }
 
       if (Object.prototype.hasOwnProperty.call(currCounter, 'holdTime')) {
