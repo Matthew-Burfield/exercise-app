@@ -1,5 +1,6 @@
 import React from 'react';
 
+import defaultState from './defaultState';
 import { NavBarTop } from './components/nav/NavBar';
 import ViewMode from './components/ViewMode';
 import EditMode from './components/EditMode';
@@ -11,101 +12,7 @@ class App extends React.Component {
   constructor(props) {
 
     super(props);
-    this.state = {
-      editMode: false,
-      currentWorkout: {
-        currentRoutine: undefined,
-        currentExercise: undefined,
-      },
-      routines: [{
-        name: 'Full Body Workout',
-        exercises: [{
-          name: 'Handstand',
-          sets: 5,
-          reps: 1,
-          timer: {
-            prepTime: 5,
-            holdTime: 30,
-            restTime: 60,
-          },
-        }, {
-          name: 'Plank',
-          sets: 2,
-          reps: 1,
-          timer: {
-            prepTime: 3,
-            holdTime: 60,
-            restTime: 60,
-          },
-        }, {
-          name: 'Ring Hold',
-          sets: 2,
-          reps: 1,
-          timer: {
-            prepTime: 5,
-            holdTime: 60,
-            restTime: 60,
-          },
-        }, {
-          name: 'Pull ups',
-          sets: 5,
-          reps: 5,
-          timer: {
-            restTime: 180,
-          },
-        }, {
-          name: 'Dips',
-          sets: 5,
-          reps: 5,
-          timer: {
-            restTime: 180,
-          },
-        }, {
-          name: 'Pushups',
-          sets: 5,
-          reps: 5,
-          timer: {
-            restTime: 180,
-          },
-        }, {
-          name: 'Rows',
-          sets: 5,
-          reps: 5,
-          timer: {
-            restTime: 180,
-          },
-        }, {
-          name: 'Squat',
-          sets: 5,
-          reps: 5,
-          weight: 80,
-          timer: {
-            restTime: 180,
-          },
-        }, {
-          name: 'Deadlift',
-          sets: 5,
-          reps: 5,
-          timer: {
-            restTime: 180,
-          },
-        }, {
-          name: 'Kettle Bell Swings',
-          sets: 2,
-          timer: {
-            prepTime: 5,
-            holdTime: 60,
-            restTime: 180,
-          },
-        }],
-      }, {
-        name: 'Second Routine',
-        exercises: [],
-      }, {
-        name: 'Third Routine',
-        exercises: [],
-      }],
-    };
+    this.state = JSON.parse(localStorage.exerciseState) || defaultState;
 
     this.ten = new Audio('audio/ten-to-zero-countdown.mp3');
     this.five = new Audio('audio/five-to-zero-countdown.mp3');
@@ -121,6 +28,12 @@ class App extends React.Component {
     this.handleSwitchEditMode = this.handleSwitchEditMode.bind(this);
     this.selectExercise = this.selectExercise.bind(this);
     this.handleOnChange = this.handleOnChange.bind(this);
+    this.updateStateAndSaveToLocalStorage = this.updateStateAndSaveToLocalStorage.bind(this);
+  }
+
+  updateStateAndSaveToLocalStorage(newState) {
+    localStorage.exerciseState = JSON.stringify(newState);
+    this.setState(newState);
   }
 
   tick(currentExercise) {
@@ -134,9 +47,7 @@ class App extends React.Component {
       delete currCounter.prepTimeVal;
       delete currCounter.holdTimeVal;
       delete currCounter.restTimeVal;
-      this.setState(
-        newState,
-      );
+      this.updateStateAndSaveToLocalStorage(newState);
 
     } else {
       const timeElapsed = currCounter.holdTime - currCounter.holdTimeVal;
@@ -161,9 +72,7 @@ class App extends React.Component {
         currCounter.restTimeVal -= 1;
       }
 
-      this.setState(
-        newState,
-      );
+      this.updateStateAndSaveToLocalStorage(newState);
     }
   }
 
@@ -180,9 +89,7 @@ class App extends React.Component {
     } else {
       newState.routines[currentRoutine].exercises[currentExercise][key] = value;
     }
-    this.setState({
-      newState,
-    });
+    this.updateStateAndSaveToLocalStorage(newState);
   }
 
   handleClick(currentExercise) {
@@ -215,9 +122,7 @@ class App extends React.Component {
         currCounter.restTimeVal = currCounter.restTime;
       }
 
-      this.setState(
-        newState,
-      );
+      this.updateStateAndSaveToLocalStorage(newState);
     }
   }
 
@@ -232,9 +137,7 @@ class App extends React.Component {
       currentExercise: 0,
     };
 
-    this.setState(
-      newState,
-    );
+    this.updateStateAndSaveToLocalStorage(newState);
   }
 
   selectExercise(exerciseIndex) {
@@ -263,12 +166,10 @@ class App extends React.Component {
   }
 
   handleCancelWorkout() {
-    this.setState({
-      currentWorkout: {
-        currentRoutine: undefined,
-        currentExercise: undefined,
-      },
-    });
+    const newState = Object.assign({}, this.state);
+    newState.currentWorkout.currentRoutine = undefined;
+    newState.currentWorkout.currentWorkout = undefined;
+    this.updateStateAndSaveToLocalStorage(newState);
   }
 
   handleSwitchEditMode() {
