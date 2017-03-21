@@ -6,7 +6,6 @@ import ViewMode from './components/ViewMode';
 import EditMode from './components/EditMode';
 import './App.scss';
 
-
 class App extends React.Component {
 
   constructor(props) {
